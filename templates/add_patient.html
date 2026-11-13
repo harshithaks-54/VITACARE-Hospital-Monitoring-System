@@ -1,0 +1,222 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Patient | VITACARE</title>
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <!-- Patient Management CSS -->
+    <link rel="stylesheet" href="{% static 'css/patients.css' %}">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- LEFT SIDEBAR -->
+    {% include "partials/sidebar.html" %}
+
+
+    <!-- RIGHT SIDE CONTENT -->
+    <main class="patients-main">
+
+
+        <!-- PAGE HEADER -->
+        <div class="patients-header">
+
+            <div class="patients-heading">
+
+                <!-- BACK NAVIGATION ICON -->
+                <a href="{% url 'patient_list' %}"
+                   class="back-button"
+                   title="Back to Patient Management">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                </a>
+
+
+                <!-- PAGE TITLE -->
+                <div>
+                    <h1>Add New Patient</h1>
+                    <p>Register a new patient in the hospital</p>
+                </div>
+
+            </div>
+
+
+            <!-- HEADER ICONS -->
+            <div class="header-icons">
+
+                <i class="bi bi-bell"></i>
+
+                <i class="bi bi-person-circle"></i>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- PATIENT REGISTRATION CARD -->
+        <section class="registration-card">
+
+
+            <!-- FORM TITLE -->
+            <div class="registration-title">
+
+                <div class="registration-icon">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+
+                <div>
+                    <h2>Patient Information</h2>
+                    <p>Enter the patient's details below</p>
+                </div>
+
+            </div>
+
+
+
+            <!-- GENERAL FORM ERRORS -->
+            {% if form.non_field_errors %}
+
+                <div class="form-error-message">
+
+                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                    <div>
+
+                        {% for error in form.non_field_errors %}
+
+                            <p>{{ error }}</p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- PATIENT FORM -->
+            <form method="POST" class="patient-registration-form">
+
+                {% csrf_token %}
+
+
+                <div class="form-grid">
+
+
+                    {% for field in form %}
+
+                        <div class="form-group">
+
+                            <label for="{{ field.id_for_label }}">
+
+                                {{ field.label }}
+
+                                <span class="required-star">*</span>
+
+                            </label>
+
+
+                            {{ field }}
+
+
+                            <!-- FIELD VALIDATION ERRORS -->
+                            {% if field.errors %}
+
+                                <div class="field-error">
+
+                                    {% for error in field.errors %}
+
+                                        <span>
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            {{ error }}
+                                        </span>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+
+
+                <!-- INFORMATION NOTE -->
+                <div class="form-note">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    Please verify the patient information before saving.
+                    Patient ID and patient name must be unique.
+
+                </div>
+
+
+
+                <!-- FORM BUTTONS -->
+                <div class="form-actions">
+
+
+                    <!-- CANCEL BUTTON -->
+                    <a href="{% url 'patient_list' %}"
+                       class="cancel-button">
+
+                        <i class="bi bi-x-lg"></i>
+
+                        Cancel
+
+                    </a>
+
+
+
+                    <!-- SAVE BUTTON -->
+                    <button type="submit"
+                            class="save-patient-button">
+
+                        <i class="bi bi-check-lg"></i>
+
+                        Save Patient
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+</html>

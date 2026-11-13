@@ -1,0 +1,520 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | VITACARE</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}?v=4">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    {% include "partials/sidebar.html" %}
+
+    <main class="settings-main">
+
+        <!-- PAGE HEADER -->
+        <header class="settings-header">
+
+            <div class="settings-heading">
+                <div class="settings-heading-icon">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+
+                <div>
+                    <h1>Settings</h1>
+                    <p>Manage your account, system preferences, and hospital information</p>
+                </div>
+            </div>
+
+            <div class="settings-header-right">
+                <i class="bi bi-bell"></i>
+
+                <div class="settings-admin-chip">
+                    <i class="bi bi-person-circle"></i>
+                    <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- SUCCESS AND ERROR MESSAGES -->
+        {% if messages %}
+        <div class="settings-messages">
+            {% for message in messages %}
+            <div class="settings-message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% with active_section=selected_section %}
+
+        <div class="settings-layout">
+
+            <!-- LEFT SETTINGS MENU -->
+            <nav class="settings-menu">
+
+                <a href="{% url 'settings_dashboard' %}?section=profile"
+                   class="settings-menu-item {% if active_section == 'profile' %}selected{% endif %}">
+                    <i class="bi bi-person-fill"></i>
+                    <span>Admin Profile</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=users"
+                   class="settings-menu-item {% if active_section == 'users' %}selected{% endif %}">
+                    <i class="bi bi-people"></i>
+                    <span>User Management</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=hospital"
+                   class="settings-menu-item {% if active_section == 'hospital' %}selected{% endif %}">
+                    <i class="bi bi-buildings"></i>
+                    <span>Hospital Details</span>
+                </a>
+
+                <a href="{% url 'backup_dashboard' %}"
+                   class="settings-menu-item {% if request.resolver_match.url_name == 'backup_dashboard' %}selected{% endif %}">
+                    <i class="bi bi-database"></i>
+                    <span>Backup &amp; Restore</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=preferences"
+                   class="settings-menu-item {% if active_section == 'preferences' %}selected{% endif %}">
+                    <i class="bi bi-sliders"></i>
+                    <span>System Preferences</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=about"
+                   class="settings-menu-item {% if active_section == 'about' %}selected{% endif %}">
+                    <i class="bi bi-info-circle"></i>
+                    <span>About System</span>
+                </a>
+
+            </nav>
+
+            <!-- RIGHT CONTENT -->
+            <section class="settings-content">
+
+                {% if active_section == "profile" %}
+
+                <!-- ADMIN PROFILE -->
+                <article class="settings-card">
+
+                    <div class="settings-card-heading">
+                        <div class="settings-card-icon">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div>
+                            <h2>Admin Profile</h2>
+                            <p>View and update administrator information</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-divider"></div>
+
+                    <div class="admin-profile-summary">
+                        <div class="admin-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div class="admin-summary-details">
+                            <div class="admin-name-row">
+                                <h3>{{ admin_user.get_full_name|default:admin_user.username }}</h3>
+                                <span class="admin-role-badge">System Administrator</span>
+                            </div>
+
+                            <p>
+                                <i class="bi bi-envelope"></i>
+                                {{ admin_user.email|default:"Email not added" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <form method="POST"
+                          action="{% url 'settings_dashboard' %}?section=profile">
+
+                        {% csrf_token %}
+
+                        {{ form.as_p }}
+
+                        <div class="settings-form-actions">
+                            <button type="submit" class="settings-save-btn">
+                                <i class="bi bi-save"></i>
+                                Save Profile
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <div class="settings-divider"></div>
+
+                    <div class="password-section">
+                        <h3>Account Security</h3>
+                        <p>Update your administrator account password.</p>
+
+                        <a href="{% url 'change_admin_password' %}"
+                           class="password-update-btn">
+                            <i class="bi bi-lock"></i>
+                            Change Password
+                        </a>
+                    </div>
+
+                </article>
+
+                {% elif active_section == "hospital" %}
+
+                <!-- HOSPITAL DETAILS -->
+                <article class="settings-card">
+
+                    <div class="settings-card-heading">
+                        <div class="settings-card-icon">
+                            <i class="bi bi-buildings"></i>
+                        </div>
+
+                        <div>
+                            <h2>Hospital Details</h2>
+                            <p>Manage hospital information and capacity details</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-divider"></div>
+
+                    <form method="POST"
+                          action="{% url 'settings_dashboard' %}?section=hospital">
+
+                        {% csrf_token %}
+
+                        {{ hospital_form.as_p }}
+
+                        <div class="settings-form-actions">
+                            <button type="submit" class="settings-save-btn">
+                                <i class="bi bi-save"></i>
+                                Save Hospital Details
+                            </button>
+                        </div>
+
+                    </form>
+
+                </article>
+
+                {% elif active_section == "users" %}
+
+                <!-- USER MANAGEMENT -->
+                <article class="settings-card">
+
+                    <div class="settings-card-heading">
+                        <div class="settings-card-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                        <div>
+                            <h2>User Management</h2>
+                            <p>Manage hospital system users and their access</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-divider"></div>
+
+                    {% if can_manage_users %}
+
+                    <div class="user-management-top">
+
+                        <form method="GET"
+                              action="{% url 'settings_dashboard' %}">
+
+                            <input type="hidden" name="section" value="users">
+
+                            <input type="text"
+                                   name="search"
+                                   value="{{ search }}"
+                                   placeholder="Search users...">
+
+                            <button type="submit" class="settings-save-btn">
+                                <i class="bi bi-search"></i>
+                                Search
+                            </button>
+
+                        </form>
+
+                        <a href="{% url 'add_user' %}" class="settings-save-btn">
+                            <i class="bi bi-person-plus"></i>
+                            Add User
+                        </a>
+
+                    </div>
+
+                    <div class="settings-table-wrapper">
+
+                        <table class="settings-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for staff_user in staff_users %}
+
+                                <tr>
+                                    <td>{{ staff_user.username }}</td>
+
+                                    <td>{{ staff_user.email|default:"—" }}</td>
+
+                                    <td>
+                                        {% if staff_user.is_superuser %}
+                                            Admin
+                                        {% else %}
+                                            {% for group in staff_user.groups.all %}
+                                                {{ group.name }}{% if not forloop.last %}, {% endif %}
+                                            {% empty %}
+                                                Not assigned
+                                            {% endfor %}
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if staff_user.is_active %}
+                                            <span class="status-active">Active</span>
+                                        {% else %}
+                                            <span class="status-inactive">Inactive</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="actions-cell">
+
+                                        <a href="{% url 'edit_user' staff_user.id %}"
+                                           class="table-action">
+                                            Edit
+                                        </a>
+
+                                        {% if staff_user.id != request.user.id %}
+
+                                        <form method="POST"
+                                              action="{% url 'toggle_user_status' staff_user.id %}"
+                                              class="inline-form">
+
+                                            {% csrf_token %}
+
+                                            <button type="submit" class="table-action">
+                                                {% if staff_user.is_active %}
+                                                    Deactivate
+                                                {% else %}
+                                                    Activate
+                                                {% endif %}
+                                            </button>
+
+                                        </form>
+
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+                                    <td colspan="5" class="empty-table">
+                                        No users found.
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="settings-placeholder-content">
+                        <i class="bi bi-shield-lock"></i>
+                        <h3>Access Restricted</h3>
+                        <p>You do not have permission to manage system users.</p>
+                    </div>
+
+                    {% endif %}
+
+                </article>
+
+                {% elif active_section == "preferences" %}
+
+                <!-- SYSTEM PREFERENCES -->
+                <article class="settings-card">
+
+                    <div class="settings-card-heading">
+                        <div class="settings-card-icon">
+                            <i class="bi bi-sliders"></i>
+                        </div>
+
+                        <div>
+                            <h2>System Preferences</h2>
+                            <p>System configuration options</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-divider"></div>
+
+                    <div class="settings-placeholder-content">
+                        <i class="bi bi-tools"></i>
+                        <h3>System Preferences</h3>
+                        <p>
+                            Preference controls can be configured here.
+                            No preference values are currently stored by this project.
+                        </p>
+                    </div>
+
+                </article>
+
+                {% elif active_section == "about" %}
+
+                <!-- ABOUT SYSTEM -->
+                <article class="settings-card about-system-card">
+
+                    <div class="settings-card-heading">
+                        <div class="settings-card-icon">
+                            <i class="bi bi-info-circle"></i>
+                        </div>
+
+                        <div>
+                            <h2>About System</h2>
+                            <p>System information and version details of VITACARE</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-divider"></div>
+
+                    <div class="about-brand-card">
+
+                        <div class="about-brand-icon">
+                            <i class="bi bi-heart-pulse-fill"></i>
+                        </div>
+
+                        <div class="about-brand-divider"></div>
+
+                        <div class="about-brand-details">
+                            <h1>VITACARE</h1>
+                            <p>
+                                Intelligent Centralized<br>
+                                Hospital Monitoring System
+                            </p>
+                        </div>
+
+                        <div class="about-version">Version 1.0.0</div>
+
+                    </div>
+
+                    <div class="about-information-table">
+
+                        <div class="about-info-row">
+                            <div class="about-info-label">
+                                <i class="bi bi-gear"></i>
+                                <strong>System Name</strong>
+                            </div>
+                            <div class="about-info-value">VITACARE</div>
+                        </div>
+
+                        <div class="about-info-row">
+                            <div class="about-info-label">
+                                <i class="bi bi-layers"></i>
+                                <strong>Version</strong>
+                            </div>
+                            <div class="about-info-value">1.0.0</div>
+                        </div>
+
+                        <div class="about-info-row">
+                            <div class="about-info-label">
+                                <i class="bi bi-calendar-event"></i>
+                                <strong>Release Date</strong>
+                            </div>
+                            <div class="about-info-value">12 November 2026</div>
+                        </div>
+
+                        <div class="about-info-row">
+                            <div class="about-info-label">
+                                <i class="bi bi-code-slash"></i>
+                                <strong>Technology</strong>
+                            </div>
+                            <div class="about-info-value">
+                                Django (Python), HTML, CSS, Bootstrap, MySQL
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="about-description">
+
+                        <div class="about-description-icon">
+                            <i class="bi bi-hospital"></i>
+                        </div>
+
+                        <div>
+                            <h3>About VITACARE</h3>
+                            <p>
+                                VITACARE is an Intelligent Centralized Hospital
+                                Monitoring System designed to support hospital
+                                operations through centralized patient monitoring,
+                                room management, alerts and notifications, medicine
+                                management, and medicine delivery robot monitoring.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="about-copyright">
+
+                        <div class="copyright-heading">
+                            <i class="bi bi-c-circle"></i>
+                            <strong>
+                                VITACARE – Intelligent Centralized Hospital Monitoring System
+                            </strong>
+                        </div>
+
+                        <p>© 2026 VITACARE. All rights reserved.</p>
+
+                    </div>
+
+                </article>
+
+                {% else %}
+
+                <article class="settings-card">
+                    <div class="settings-placeholder-content">
+                        <i class="bi bi-gear"></i>
+                        <h3>Settings Section Not Found</h3>
+                        <p>Please select a valid settings option.</p>
+                    </div>
+                </article>
+
+                {% endif %}
+
+            </section>
+
+        </div>
+
+        {% endwith %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

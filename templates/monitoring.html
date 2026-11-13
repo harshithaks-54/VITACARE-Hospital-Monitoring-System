@@ -1,0 +1,957 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Monitoring | VITACARE</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/dashboard.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'css/monitoring.css' %}?v=3">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- EXISTING LEFT SIDEBAR -->
+    {% include "partials/sidebar.html" %}
+
+
+    <main class="main-content monitoring-main">
+
+        <!-- =================================
+             HEADER
+        ================================== -->
+
+        <header class="new-monitoring-header">
+
+            <div class="monitoring-brand-left">
+
+                <div class="monitoring-brand-icon">
+                    <i class="bi bi-activity"></i>
+                </div>
+
+                <div>
+                    <h1>Patient Monitoring</h1>
+                    <p>Real-time monitoring of patient vital signs</p>
+                </div>
+
+            </div>
+
+            <div class="monitoring-brand-right">
+
+                <i class="bi bi-heart-pulse"></i>
+
+                <div>
+                    <strong>VITACARE</strong>
+                    <span>Patient Monitoring</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================
+             PATIENT SELECTION
+        ================================== -->
+
+        <section class="monitoring-topbar">
+
+            <div class="monitoring-patient-select">
+
+                <label for="patientSelect">
+                    <i class="bi bi-person"></i>
+                    Select Patient:
+                </label>
+
+                <select
+                    id="patientSelect"
+                    data-demo="{% if demo_mode %}1{% else %}0{% endif %}"
+                    onchange="selectMonitoringPatient(this.value)">
+
+                    {% for item in patient_data %}
+
+                        <option
+                            value="{{ item.patient.pk }}"
+                            {% if selected_patient.pk == item.patient.pk %}selected{% endif %}>
+
+                            {{ item.patient.patient_id }} - {{ item.patient.name }}
+
+                        </option>
+
+                    {% empty %}
+
+                        <option value="">
+                            No admitted patients available
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="monitoring-live-status">
+
+                <span class="live-dot"></span>
+                Monitoring: Active
+
+            </div>
+
+
+            <div class="monitoring-top-actions">
+
+                {% if demo_mode %}
+
+                    <span class="demo-mode-label">
+                        <i class="bi bi-info-circle"></i>
+                        Demo Mode
+                    </span>
+
+                    <a
+                        href="{% url 'monitoring_page' %}{% if selected_patient %}?patient={{ selected_patient.pk }}{% endif %}"
+                        class="monitoring-demo-button">
+
+                        Exit Demo
+
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'monitoring_page' %}?demo=1{% if selected_patient %}&patient={{ selected_patient.pk }}{% endif %}"
+                        class="monitoring-demo-button">
+
+                        <i class="bi bi-play-circle"></i>
+                        Test with Sample Data
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        {% if demo_mode %}
+
+            <div class="monitoring-data-notice">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                Demo Mode: These readings are simulated and are not saved in the database.
+
+            </div>
+
+        {% endif %}
+
+
+        {% if selected_patient %}
+
+
+        <!-- =================================
+             PATIENT INFORMATION
+        ================================== -->
+
+        <section class="new-patient-card">
+
+            <div class="new-patient-avatar">
+
+                <i class="bi bi-person-fill"></i>
+
+            </div>
+
+
+            <div class="new-patient-details">
+
+                <span class="new-patient-caption">
+                    PATIENT INFORMATION
+                </span>
+
+                <h2>{{ selected_patient.name }}</h2>
+
+
+                <div class="new-patient-meta">
+
+                    <span>
+                        <i class="bi bi-person-vcard"></i>
+                        {{ selected_patient.patient_id }}
+                    </span>
+
+                    <span>
+                        <i class="bi bi-calendar3"></i>
+                        {{ selected_patient.age }} years
+                    </span>
+
+                    <span>
+                        <i class="bi bi-gender-ambiguous"></i>
+                        {{ selected_patient.gender }}
+                    </span>
+
+                    <span>
+                        <i class="bi bi-door-open"></i>
+
+                        {% if selected_patient.room %}
+                            Room {{ selected_patient.room.room_number }}
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- PATIENT STATUS PANEL -->
+
+            <div class="new-patient-status-panel">
+
+                <i class="bi bi-heart-pulse"></i>
+
+                <div>
+
+                    <span>Patient Status</span>
+
+                    <strong>
+
+                        {% if selected_data.reading %}
+                            Readings Available
+                        {% else %}
+                            No Readings
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+                <div class="patient-status-message">
+
+                    {% if selected_data.reading %}
+
+                        Latest available health readings are displayed for review.
+
+                    {% else %}
+
+                        No health readings are currently available.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        {% if selected_data.reading %}
+
+
+        <!-- =================================
+             VITAL SIGNS HEADING
+        ================================== -->
+
+        <section class="new-section-heading">
+
+            <div>
+                <h2>Patient Vital Signs</h2>
+                <p>Current health parameter overview</p>
+            </div>
+
+            <span class="vitals-update-label">
+
+                <i class="bi bi-clock-history"></i>
+
+                Updated {{ selected_data.reading.recorded_at|date:"h:i A" }}
+
+            </span>
+
+        </section>
+
+
+        <!-- =================================
+             FIVE VITAL CARDS
+        ================================== -->
+
+        <section class="new-vitals-grid">
+
+
+            <!-- HEART RATE -->
+
+            <div class="new-vital-card">
+
+                <div class="new-vital-top">
+
+                    <div class="new-vital-icon heart-color">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </div>
+
+                    <span class="new-vital-tag">
+                        HEART RATE
+                    </span>
+
+                </div>
+
+                <div class="new-vital-reading">
+
+                    {{ selected_data.reading.heart_rate }}
+
+                    <small>BPM</small>
+
+                </div>
+
+                <p>Heart beats per minute</p>
+
+            </div>
+
+
+            <!-- OXYGEN LEVEL -->
+
+            <div class="new-vital-card">
+
+                <div class="new-vital-top">
+
+                    <div class="new-vital-icon oxygen-color">
+                        <i class="bi bi-lungs-fill"></i>
+                    </div>
+
+                    <span class="new-vital-tag">
+                        SpO₂
+                    </span>
+
+                </div>
+
+                <div class="new-vital-reading">
+
+                    {{ selected_data.reading.spo2 }}
+
+                    <small>%</small>
+
+                </div>
+
+                <p>Blood oxygen saturation</p>
+
+            </div>
+
+
+            <!-- TEMPERATURE -->
+
+            <div class="new-vital-card">
+
+                <div class="new-vital-top">
+
+                    <div class="new-vital-icon temperature-color">
+                        <i class="bi bi-thermometer-half"></i>
+                    </div>
+
+                    <span class="new-vital-tag">
+                        TEMPERATURE
+                    </span>
+
+                </div>
+
+                <div class="new-vital-reading">
+
+                    {{ selected_data.reading.temperature }}
+
+                    <small>°C</small>
+
+                </div>
+
+                <p>Body temperature</p>
+
+            </div>
+
+
+            <!-- BLOOD PRESSURE -->
+
+            <div class="new-vital-card">
+
+                <div class="new-vital-top">
+
+                    <div class="new-vital-icon pressure-color">
+                        <i class="bi bi-droplet-half"></i>
+                    </div>
+
+                    <span class="new-vital-tag">
+                        BLOOD PRESSURE
+                    </span>
+
+                </div>
+
+                <div class="new-vital-reading bp-reading">
+
+                    {{ selected_data.reading.systolic_bp }}/{{ selected_data.reading.diastolic_bp }}
+
+                    <small>mmHg</small>
+
+                </div>
+
+                <p>Systolic / Diastolic pressure</p>
+
+            </div>
+
+
+            <!-- IV LEVEL -->
+
+            <div class="new-vital-card">
+
+                <div class="new-vital-top">
+
+                    <div class="new-vital-icon iv-color">
+                        <i class="bi bi-moisture"></i>
+                    </div>
+
+                    <span class="new-vital-tag">
+                        IV LEVEL
+                    </span>
+
+                </div>
+
+                <div class="new-vital-reading">
+
+                    {{ selected_data.reading.iv_level }}
+
+                    <small>%</small>
+
+                </div>
+
+                <div class="new-iv-progress">
+
+                    <div
+                        class="new-iv-fill"
+                        data-level="{{ selected_data.reading.iv_level }}">
+                    </div>
+
+                </div>
+
+                <p>Remaining IV fluid</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             TREND CHART AND VOICE NOTIFICATION
+        ================================== -->
+
+        <section class="monitoring-bottom-grid">
+
+
+            <!-- VITAL SIGNS TREND -->
+
+            <div class="monitoring-chart-card">
+
+                <div class="new-card-heading">
+
+                    <div>
+
+                        <h2>
+                            <i class="bi bi-graph-up-arrow"></i>
+                            Vital Signs Trend
+                        </h2>
+
+                        <p>Historical patient readings</p>
+
+                    </div>
+
+                    <span class="chart-heading-icon">
+                        <i class="bi bi-bar-chart-line"></i>
+                    </span>
+
+                </div>
+
+
+                {% if trend_readings %}
+
+                    <div class="monitoring-chart-container">
+
+                        <canvas id="vitalsTrendChart"></canvas>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="monitoring-empty-chart">
+
+                        <i class="bi bi-graph-up"></i>
+
+                        <p>
+                            No historical readings available yet.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- VOICE NOTIFICATION -->
+
+            <div class="monitoring-voice-card">
+
+                <div class="new-card-heading">
+
+                    <div>
+
+                        <h2>
+                            <i class="bi bi-volume-up-fill"></i>
+                            Voice Notification
+                        </h2>
+
+                        <p>
+                            AI voice announcements for abnormal readings.
+                        </p>
+
+                    </div>
+
+                    <span class="voice-heading-icon">
+                        <i class="bi bi-soundwave"></i>
+                    </span>
+
+                </div>
+
+
+                <div class="voice-main-content">
+
+                    <div class="voice-large-icon">
+
+                        <i class="bi bi-mic-fill"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3 id="voiceTitle">
+                            Voice Assistant
+                        </h3>
+
+                        <p id="voiceStatus">
+                            Voice announcements are currently disabled.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="voice-control-buttons">
+
+                    <button
+                        type="button"
+                        id="enableVoiceBtn"
+                        class="voice-enable-btn">
+
+                        <i class="bi bi-volume-up-fill"></i>
+                        Enable Voice
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="disableVoiceBtn"
+                        class="voice-disable-btn">
+
+                        <i class="bi bi-volume-mute-fill"></i>
+                        Disable
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="testVoiceBtn"
+                        class="voice-test-btn">
+
+                        <i class="bi bi-play-fill"></i>
+                        Test Announcement
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- LAST UPDATED -->
+
+        <div class="monitoring-last-update">
+
+            <i class="bi bi-clock-history"></i>
+
+            Last recorded reading:
+
+            {{ selected_data.reading.recorded_at|date:"d M Y, h:i A" }}
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- NO READING AVAILABLE -->
+
+        <div class="monitoring-empty-state">
+
+            <i class="bi bi-clipboard2-pulse"></i>
+
+            <h3>No Health Readings Available</h3>
+
+            <p>
+                No readings have been saved for this patient.
+            </p>
+
+            <p>
+                Use Demo Mode to test the monitoring interface.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+        {% else %}
+
+
+        <!-- NO PATIENT AVAILABLE -->
+
+        <div class="monitoring-empty-state">
+
+            <i class="bi bi-person-exclamation"></i>
+
+            <h3>No Admitted Patients Found</h3>
+
+            <p>
+                Please add a patient and set their status to Admitted.
+            </p>
+
+            <a href="{% url 'patient_list' %}">
+                View Patient Management
+            </a>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </main>
+
+</div>
+
+
+<!-- =================================
+     CHART DATA
+================================== -->
+
+{{ trend_readings|json_script:"trend-data" }}
+
+
+<!-- =================================
+     JAVASCRIPT
+================================== -->
+
+<script>
+
+    /* PATIENT SELECTION */
+
+    function selectMonitoringPatient(patientId) {
+
+        if (!patientId) return;
+
+        const select = document.getElementById("patientSelect");
+
+        const demoMode = select.dataset.demo;
+
+        let url = "{% url 'monitoring_page' %}?patient=" + patientId;
+
+        if (demoMode === "1") {
+            url += "&demo=1";
+        }
+
+        window.location.href = url;
+
+    }
+
+
+    /* IV PROGRESS BAR */
+
+    document.querySelectorAll(".new-iv-fill").forEach(function(bar) {
+
+        let level = Number(bar.dataset.level);
+
+        level = Math.max(0, Math.min(level, 100));
+
+        bar.style.width = level + "%";
+
+    });
+
+
+    /* VITAL SIGNS TREND CHART */
+
+    const trendElement = document.getElementById("trend-data");
+
+    const chartCanvas = document.getElementById("vitalsTrendChart");
+
+    if (trendElement && chartCanvas && window.Chart) {
+
+        const trendData = JSON.parse(trendElement.textContent);
+
+        if (trendData.length > 0) {
+
+            new Chart(chartCanvas, {
+
+                type: "line",
+
+                data: {
+
+                    labels: trendData.map(item => item.time),
+
+                    datasets: [
+
+                        {
+                            label: "Heart Rate (bpm)",
+
+                            data: trendData.map(item => item.heart_rate),
+
+                            borderColor: "#e72d3d",
+
+                            backgroundColor: "rgba(231,45,61,0.10)",
+
+                            borderWidth: 2,
+
+                            pointRadius: 3,
+
+                            tension: 0.35
+                        },
+
+                        {
+                            label: "SpO₂ (%)",
+
+                            data: trendData.map(item => item.spo2),
+
+                            borderColor: "#176edb",
+
+                            backgroundColor: "rgba(23,110,219,0.10)",
+
+                            borderWidth: 2,
+
+                            pointRadius: 3,
+
+                            tension: 0.35
+                        },
+
+                        {
+                            label: "Blood Pressure (Systolic)",
+
+                            data: trendData.map(item => item.systolic_bp),
+
+                            borderColor: "#9412c9",
+
+                            backgroundColor: "rgba(148,18,201,0.10)",
+
+                            borderWidth: 2,
+
+                            pointRadius: 3,
+
+                            tension: 0.35
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+                        intersect: false,
+                        mode: "index"
+                    },
+
+                    plugins: {
+
+                        legend: {
+                            position: "bottom",
+
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 8,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        },
+
+                        y: {
+                            beginAtZero: false,
+
+                            ticks: {
+                                font: {
+                                    size: 9
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    }
+
+
+    /* VOICE ANNOUNCEMENT CONTROLS */
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const enableBtn = document.getElementById("enableVoiceBtn");
+
+        const disableBtn = document.getElementById("disableVoiceBtn");
+
+        const testBtn = document.getElementById("testVoiceBtn");
+
+        const voiceStatus = document.getElementById("voiceStatus");
+
+        const voiceTitle = document.getElementById("voiceTitle");
+
+
+        if (!enableBtn || !disableBtn || !testBtn) {
+            return;
+        }
+
+
+        function speak(message) {
+
+            if (!("speechSynthesis" in window)) {
+
+                voiceStatus.textContent =
+                    "Voice announcements are not supported by this browser.";
+
+                return;
+
+            }
+
+            window.speechSynthesis.cancel();
+
+            const speech = new SpeechSynthesisUtterance(message);
+
+            speech.lang = "en-IN";
+
+            speech.rate = 0.9;
+
+            speech.pitch = 1;
+
+            window.speechSynthesis.speak(speech);
+
+        }
+
+
+        /* ENABLE VOICE */
+
+        enableBtn.addEventListener("click", function() {
+
+            sessionStorage.setItem("vitacareVoiceEnabled", "true");
+
+            voiceTitle.textContent = "Voice Alerts: Enabled";
+
+            voiceStatus.textContent =
+                "Voice announcements are enabled.";
+
+            speak(
+                "VITACARE voice notification system is enabled."
+            );
+
+        });
+
+
+        /* DISABLE VOICE */
+
+        disableBtn.addEventListener("click", function() {
+
+            sessionStorage.setItem("vitacareVoiceEnabled", "false");
+
+            window.speechSynthesis.cancel();
+
+            voiceTitle.textContent = "Voice Alerts: Disabled";
+
+            voiceStatus.textContent =
+                "Voice announcements have been disabled.";
+
+        });
+
+
+        /* TEST ANNOUNCEMENT */
+
+        testBtn.addEventListener("click", function() {
+
+            speak(
+                "Welcome to VITACARE. Patient monitoring voice announcement system is working correctly."
+            );
+
+            voiceStatus.textContent =
+                "Test announcement started.";
+
+        });
+
+
+        /* RESTORE VOICE SETTING */
+
+        if (sessionStorage.getItem("vitacareVoiceEnabled") === "true") {
+
+            voiceTitle.textContent = "Voice Alerts: Enabled";
+
+            voiceStatus.textContent =
+                "Voice announcements are enabled.";
+
+        }
+
+    });
+
+</script>
+
+
+</body>
+</html>

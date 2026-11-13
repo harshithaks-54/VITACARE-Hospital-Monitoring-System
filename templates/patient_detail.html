@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Details | VITACARE</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/patients.css' %}">
+</head>
+<body>
+<div class="dashboard-container">
+    {% include "partials/sidebar.html" %}
+
+    <main class="patients-main">
+        <h1>Patient Details</h1>
+
+        <section class="patient-details-section">
+            <p><strong>Patient ID:</strong> {{ patient.patient_id }}</p>
+            <p><strong>Name:</strong> {{ patient.name }}</p>
+            <p><strong>Age:</strong> {{ patient.age }}</p>
+            <p><strong>Gender:</strong> {{ patient.gender }}</p>
+            <p><strong>Room:</strong>
+                {% if patient.room %}{{ patient.room.room_number }}{% else %}Not Assigned{% endif %}
+            </p>
+            <p><strong>Admission Date:</strong> {{ patient.admission_date }}</p>
+            <p><strong>Status:</strong> {{ patient.status }}</p>
+
+            <a href="{% url 'patient_list' %}">Back to Patients</a>
+        </section>
+    </main>
+</div>
+</body>
+</html>

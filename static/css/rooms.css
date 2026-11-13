@@ -1,0 +1,263 @@
+
+/* ROOM SUMMARY */
+
+.room-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.room-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    padding: 16px;
+    border-radius: 11px;
+    box-shadow: 0 2px 10px rgba(20,40,70,0.05);
+}
+
+.room-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 19px;
+}
+
+.room-blue {
+    background: #e9f1ff;
+    color: #3478d4;
+}
+
+.room-green {
+    background: #e5f7ee;
+    color: #20a36a;
+}
+
+.room-orange {
+    background: #fff3e3;
+    color: #d58b27;
+}
+
+.room-purple {
+    background: #f0eaff;
+    color: #7956c9;
+}
+
+.room-summary-card p {
+    margin: 0 0 5px;
+    color: #8492a6;
+    font-size: 11px;
+}
+
+.room-summary-card h2 {
+    margin: 0;
+    color: #203653;
+    font-size: 21px;
+}
+
+
+/* ROOM DETAILS */
+
+.room-details-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(20,40,70,0.05);
+}
+
+.room-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.room-toolbar h2 {
+    font-size: 17px;
+    color: #203653;
+    margin: 0 0 5px;
+}
+
+.room-toolbar p {
+    font-size: 12px;
+    color: #8492a6;
+    margin: 0;
+}
+
+.add-room-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #2868c7;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* SEARCH */
+
+.room-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 480px;
+    margin-bottom: 20px;
+    padding: 7px 10px;
+    border: 1px solid #e0e7f0;
+    border-radius: 8px;
+    background: #fbfcfe;
+}
+
+.room-search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 5px;
+    font-size: 12px;
+}
+
+.room-search button {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 13px;
+    background: #2868c7;
+    color: white;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.room-search a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+
+/* ROOM TABLE */
+
+.room-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.room-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.room-table th {
+    background: #f5f8fc;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+    padding: 13px 10px;
+    white-space: nowrap;
+}
+
+.room-table td {
+    padding: 13px 10px;
+    border-bottom: 1px solid #edf1f6;
+    color: #42536b;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.room-number {
+    color: #2868c7 !important;
+    font-weight: 600;
+}
+
+.room-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.room-status.available {
+    background: #e5f7ee;
+    color: #168653;
+}
+
+.room-status.full {
+    background: #fff0f0;
+    color: #c03939;
+}
+
+.occupancy-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.occupancy-bar {
+    width: 55px;
+    height: 6px;
+    border-radius: 10px;
+    background: #e9eef5;
+    overflow: hidden;
+}
+
+.occupancy-fill {
+    height: 100%;
+    background: #3478d4;
+    border-radius: 10px;
+}
+
+.occupancy-cell span {
+    font-size: 10px;
+    color: #64748b;
+}
+
+.room-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.room-actions a {
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.delete-warning {
+    background: #fff0f0;
+    color: #c03939;
+    padding: 12px;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1150px) {
+    .room-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .room-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .room-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

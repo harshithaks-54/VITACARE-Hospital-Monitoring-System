@@ -1,0 +1,953 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup & Restore | VITACARE</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <style>
+        /* =========================================
+           VITACARE BACKUP & RESTORE PAGE
+           ========================================= */
+
+        .dashboard-container {
+            display: flex !important;
+            min-height: 100vh;
+            width: 100%;
+            background: #f4f7fc;
+        }
+
+        .settings-main {
+            flex: 1;
+            min-width: 0;
+            min-height: 100vh;
+            padding: 0;
+            background: #f4f7fc;
+            color: #183253;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* HEADER */
+
+        .settings-header {
+            width: 100%;
+            min-height: 125px;
+            padding: 24px 35px;
+            background: #ffffff;
+            border-bottom: 1px solid #e3eaf3;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .settings-heading {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .settings-heading-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: #e8f2ff;
+            color: #0878e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+        }
+
+        .settings-heading h1 {
+            margin: 0 0 6px;
+            font-size: 29px;
+            font-weight: 750;
+            color: #142e50;
+        }
+
+        .settings-heading p {
+            margin: 0;
+            font-size: 14px;
+            color: #718198;
+        }
+
+        .settings-header-right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .settings-header-right > i {
+            font-size: 23px;
+            color: #506681;
+        }
+
+        .settings-admin-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border: 1px solid #e1e9f2;
+            border-radius: 30px;
+            background: #ffffff;
+            color: #243c5a;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .settings-admin-chip i {
+            font-size: 21px;
+        }
+
+        /* MAIN TWO-COLUMN LAYOUT */
+
+        .settings-layout {
+            display: grid !important;
+            grid-template-columns: 255px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+            padding: 28px 30px;
+            width: 100%;
+        }
+
+        /* SETTINGS MENU */
+
+        .settings-menu {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px;
+            width: 100%;
+            padding: 13px;
+            background: #ffffff;
+            border: 1px solid #e2eaf4;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(25, 55, 90, 0.05);
+        }
+
+        .settings-menu-item {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 13px;
+            width: 100%;
+            min-height: 53px;
+            padding: 12px 14px;
+            border-radius: 9px;
+            text-decoration: none !important;
+            color: #425875 !important;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .settings-menu-item i {
+            width: 22px;
+            font-size: 19px;
+            text-align: center;
+        }
+
+        .settings-menu-item:hover {
+            background: #edf5ff;
+            color: #0878e8 !important;
+        }
+
+        .settings-menu-item.selected {
+            background: #0879e8;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(8, 121, 232, 0.18);
+        }
+
+        .settings-menu-item.selected i {
+            color: #ffffff;
+        }
+
+        /* RIGHT CONTENT */
+
+        .backup-content {
+            min-width: 0;
+            padding: 25px;
+            background: #ffffff;
+            border: 1px solid #e2eaf4;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(25, 55, 90, 0.05);
+        }
+
+        /* PAGE TITLE */
+
+        .backup-page-heading {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding-bottom: 21px;
+            margin-bottom: 23px;
+            border-bottom: 1px solid #e8edf4;
+        }
+
+        .backup-page-icon {
+            width: 59px;
+            height: 59px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: #e8f2ff;
+            color: #0878e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 27px;
+        }
+
+        .backup-page-heading h2 {
+            margin: 0 0 6px;
+            color: #183253;
+            font-size: 24px;
+            font-weight: 750;
+        }
+
+        .backup-page-heading p {
+            margin: 0;
+            color: #77879b;
+            font-size: 14px;
+        }
+
+        /* MESSAGES */
+
+        .backup-messages {
+            margin-bottom: 20px;
+        }
+
+        .backup-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 16px;
+            margin-bottom: 9px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .backup-message.success {
+            color: #087a47;
+            background: #e9f8ef;
+            border: 1px solid #b9e8ca;
+        }
+
+        .backup-message.error {
+            color: #b42318;
+            background: #fff0ef;
+            border: 1px solid #ffd0cc;
+        }
+
+        .backup-message.warning {
+            color: #946200;
+            background: #fff8e5;
+            border: 1px solid #f3df9e;
+        }
+
+        /* ACTION CARDS */
+
+        .backup-restore-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .backup-action-card {
+            min-width: 0;
+            min-height: 290px;
+            padding: 24px 21px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .backup-system-card {
+            background: #f0f6ff;
+            border: 1px solid #c6ddff;
+        }
+
+        .restore-system-card {
+            background: #effaf4;
+            border: 1px solid #c5ead4;
+        }
+
+        .action-icon {
+            width: 76px;
+            height: 76px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+
+        .backup-icon {
+            background: #d9eaff;
+            color: #0878e8;
+        }
+
+        .restore-icon {
+            background: #d8f3e2;
+            color: #07844b;
+        }
+
+        .backup-action-card h3 {
+            margin: 0 0 10px;
+            color: #183253;
+            font-size: 20px;
+            font-weight: 750;
+        }
+
+        .backup-action-card p {
+            max-width: 340px;
+            min-height: 44px;
+            margin: 0 auto 18px;
+            color: #687d96;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .backup-action-card form {
+            width: 100%;
+            max-width: 340px;
+            margin-top: auto;
+        }
+
+        /* BUTTONS */
+
+        .backup-button,
+        .restore-button {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 9px;
+            color: #ffffff !important;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .backup-button {
+            background: #0878e8;
+        }
+
+        .backup-button:hover {
+            background: #0562c4;
+            transform: translateY(-1px);
+        }
+
+        .restore-button {
+            background: #07864b;
+        }
+
+        .restore-button:hover {
+            background: #056b3b;
+            transform: translateY(-1px);
+        }
+
+        .backup-button i,
+        .restore-button i {
+            font-size: 17px;
+        }
+
+        /* FILE INPUT */
+
+        .file-input-wrapper {
+            display: block;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .file-input-wrapper input {
+            display: block;
+            width: 100%;
+            min-height: 43px;
+            padding: 7px;
+            border: 1px solid #cbdccf;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #425875;
+            font-size: 12px;
+        }
+
+        .file-input-wrapper input::file-selector-button {
+            padding: 7px 10px;
+            margin-right: 8px;
+            border: 0;
+            border-radius: 5px;
+            background: #e8f0eb;
+            color: #315c43;
+            cursor: pointer;
+        }
+
+        /* HISTORY */
+
+        .backup-history-card {
+            width: 100%;
+            padding: 21px;
+            background: #ffffff;
+            border: 1px solid #e2eaf4;
+            border-radius: 13px;
+        }
+
+        .history-heading {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 17px;
+        }
+
+        .history-heading i {
+            color: #0878e8;
+            font-size: 24px;
+        }
+
+        .history-heading h3 {
+            margin: 0;
+            color: #183253;
+            font-size: 19px;
+            font-weight: 750;
+        }
+
+        .history-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .backup-history-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            border: 1px solid #e2eaf4;
+        }
+
+        .backup-history-table thead {
+            background: #edf4fc;
+        }
+
+        .backup-history-table th {
+            padding: 13px 14px;
+            color: #29435f;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .backup-history-table td {
+            padding: 13px 14px;
+            border-top: 1px solid #e8edf4;
+            color: #536981;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .backup-file-name {
+            color: #29435f !important;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .backup-file-name i {
+            margin-right: 7px;
+            color: #0878e8;
+            font-size: 17px;
+        }
+
+        .backup-actions {
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .backup-actions form {
+            margin: 0;
+        }
+
+        .download-button,
+        .delete-button {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 11px;
+            border: none;
+            border-radius: 6px;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            font-size: 12px;
+            font-weight: 650;
+            cursor: pointer;
+        }
+
+        .download-button {
+            background: #0878e8;
+        }
+
+        .download-button:hover {
+            background: #0562c4;
+        }
+
+        .delete-button {
+            background: #e34b4b;
+        }
+
+        .delete-button:hover {
+            background: #c72f2f;
+        }
+
+        /* EMPTY HISTORY */
+
+        .empty-history {
+            padding: 35px 15px !important;
+            text-align: center;
+            color: #8998aa !important;
+        }
+
+        .empty-history i {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 27px;
+        }
+
+        .empty-history span,
+        .empty-history small {
+            display: block;
+        }
+
+        .empty-history small {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        /* SECURITY NOTE */
+
+        .backup-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 17px;
+            padding: 13px 15px;
+            border-radius: 9px;
+            background: #edf5ff;
+            color: #526b87;
+            font-size: 12px;
+        }
+
+        .backup-note i {
+            color: #0878e8;
+            font-size: 18px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1100px) {
+            .settings-layout {
+                grid-template-columns: 220px minmax(0, 1fr);
+                padding: 20px;
+                gap: 17px;
+            }
+
+            .backup-content {
+                padding: 18px;
+            }
+
+            .backup-restore-grid {
+                gap: 13px;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-menu {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .backup-restore-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .settings-header {
+                padding: 17px;
+                align-items: flex-start;
+            }
+
+            .settings-heading h1 {
+                font-size: 23px;
+            }
+
+            .settings-heading p {
+                font-size: 12px;
+            }
+
+            .settings-header-right {
+                gap: 8px;
+            }
+
+            .settings-admin-chip {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .settings-layout {
+                padding: 13px;
+            }
+
+            .settings-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .backup-content {
+                padding: 15px;
+            }
+
+            .backup-page-heading h2 {
+                font-size: 20px;
+            }
+
+            .backup-history-card {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    {% include "partials/sidebar.html" %}
+
+    <main class="settings-main">
+
+        <!-- HEADER -->
+        <header class="settings-header">
+
+            <div class="settings-heading">
+                <div class="settings-heading-icon">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+
+                <div>
+                    <h1>Settings</h1>
+                    <p>Manage your account, system preferences, and hospital information</p>
+                </div>
+            </div>
+
+            <div class="settings-header-right">
+                <i class="bi bi-bell"></i>
+
+                <div class="settings-admin-chip">
+                    <i class="bi bi-person-circle"></i>
+                    <span>
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </span>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- SETTINGS CONTENT -->
+        <div class="settings-layout">
+
+            <!-- LEFT MENU -->
+            <aside class="settings-menu">
+
+                <a href="{% url 'settings_dashboard' %}?section=profile"
+                   class="settings-menu-item">
+                    <i class="bi bi-person-fill"></i>
+                    <span>Admin Profile</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=users"
+                   class="settings-menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>User Management</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=hospital"
+                   class="settings-menu-item">
+                    <i class="bi bi-buildings"></i>
+                    <span>Hospital Details</span>
+                </a>
+
+                <a href="{% url 'backup_dashboard' %}"
+                   class="settings-menu-item selected">
+                    <i class="bi bi-database"></i>
+                    <span>Backup & Restore</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=preferences"
+                   class="settings-menu-item">
+                    <i class="bi bi-sliders"></i>
+                    <span>System Preferences</span>
+                </a>
+
+                <a href="{% url 'settings_dashboard' %}?section=about"
+                   class="settings-menu-item">
+                    <i class="bi bi-info-circle"></i>
+                    <span>About System</span>
+                </a>
+
+            </aside>
+
+
+            <!-- RIGHT PANEL -->
+            <section class="backup-content">
+
+                <!-- TITLE -->
+                <div class="backup-page-heading">
+
+                    <div class="backup-page-icon">
+                        <i class="bi bi-database-fill"></i>
+                    </div>
+
+                    <div>
+                        <h2>Backup & Restore</h2>
+                        <p>Backup your system data and restore it when needed.</p>
+                    </div>
+
+                </div>
+
+
+                <!-- DJANGO MESSAGES -->
+                {% if messages %}
+                <div class="backup-messages">
+
+                    {% for message in messages %}
+                    <div class="backup-message {{ message.tags }}">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                {% endif %}
+
+
+                <!-- BACKUP AND RESTORE CARDS -->
+                <div class="backup-restore-grid">
+
+                    <!-- BACKUP CARD -->
+                    <div class="backup-action-card backup-system-card">
+
+                        <div class="action-icon backup-icon">
+                            <i class="bi bi-database-fill"></i>
+                        </div>
+
+                        <h3>Backup System</h3>
+
+                        <p>
+                            Create a backup of all hospital database records,
+                            including patients, rooms and reports.
+                        </p>
+
+                        <form method="POST" action="{% url 'create_backup' %}">
+                            {% csrf_token %}
+
+                            <button type="submit" class="backup-button">
+                                <i class="bi bi-cloud-arrow-down-fill"></i>
+                                Create Backup
+                            </button>
+                        </form>
+
+                    </div>
+
+
+                    <!-- RESTORE CARD -->
+                    <div class="backup-action-card restore-system-card">
+
+                        <div class="action-icon restore-icon">
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
+                        </div>
+
+                        <h3>Restore System</h3>
+
+                        <p>
+                            Restore hospital database records from a
+                            previously created backup ZIP file.
+                        </p>
+
+                        <form method="POST"
+                              action="{% url 'restore_backup' %}"
+                              enctype="multipart/form-data"
+                              id="restoreForm">
+
+                            {% csrf_token %}
+
+                            <label class="file-input-wrapper">
+                                <input type="file"
+                                       name="backup_file"
+                                       id="backupFile"
+                                       accept=".zip"
+                                       required>
+                            </label>
+
+                            <button type="submit" class="restore-button">
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Restore Backup
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BACKUP HISTORY -->
+                <div class="backup-history-card">
+
+                    <div class="history-heading">
+                        <i class="bi bi-clock-history"></i>
+                        <h3>Backup History</h3>
+                    </div>
+
+                    <div class="history-table-wrapper">
+
+                        <table class="backup-history-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Backup File</th>
+                                    <th>Date & Time</th>
+                                    <th>Size</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for backup in backups %}
+                                <tr>
+
+                                    <td class="backup-file-name">
+                                        <i class="bi bi-file-earmark-zip-fill"></i>
+                                        {{ backup.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ backup.created_at|date:"d M Y, h:i A" }}
+                                    </td>
+
+                                    <td>
+                                        {{ backup.size_mb }} MB
+                                    </td>
+
+                                    <td class="backup-actions">
+
+                                        <a href="{% url 'download_backup' backup.name %}"
+                                           class="download-button">
+                                            <i class="bi bi-download"></i>
+                                            Download
+                                        </a>
+
+                                        <form method="POST"
+                                              action="{% url 'delete_backup' backup.name %}"
+                                              onsubmit="return confirm('Are you sure you want to delete this backup?');">
+
+                                            {% csrf_token %}
+
+                                            <button type="submit" class="delete-button">
+                                                <i class="bi bi-trash"></i>
+                                                Delete
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+                                    <td colspan="4" class="empty-history">
+                                        <i class="bi bi-inbox"></i>
+                                        <span>No backup records available.</span>
+                                        <small>Create your first backup to see it here.</small>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SECURITY NOTE -->
+                <div class="backup-note">
+                    <i class="bi bi-shield-check"></i>
+                    <span>
+                        Keep backup files secure. Restore only from a trusted
+                        VITACARE backup file.
+                    </span>
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+    const restoreForm = document.getElementById("restoreForm");
+    const backupFile = document.getElementById("backupFile");
+
+    restoreForm.addEventListener("submit", function (event) {
+
+        if (!backupFile.files.length) {
+            event.preventDefault();
+            alert("Please select a backup ZIP file.");
+            return;
+        }
+
+        const confirmed = confirm(
+            "Restoring a backup can replace existing database records. " +
+            "Make sure you have a separate backup of your current database. " +
+            "Do you want to continue?"
+        );
+
+        if (!confirmed) {
+            event.preventDefault();
+        }
+    });
+</script>
+
+</body>
+</html>

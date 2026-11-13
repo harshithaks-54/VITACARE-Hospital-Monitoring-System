@@ -1,0 +1,73 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Room | VITACARE</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/patients.css' %}">
+    <link rel="stylesheet" href="{% static 'css/rooms.css' %}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    {% include "partials/sidebar.html" %}
+
+    <main class="patients-main">
+
+        <div class="patients-header">
+            <div class="patients-heading">
+                <a href="{% url 'room_list' %}" class="back-button">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+
+                <div>
+                    <h1>Delete Room</h1>
+                    <p>Confirm room deletion</p>
+                </div>
+            </div>
+        </div>
+
+
+        <section class="registration-card">
+
+            <h2>Are you sure?</h2>
+
+            <p>
+                Do you want to delete Room
+                <strong>{{ room.room_number }}</strong>?
+            </p>
+
+            <p class="delete-warning">
+                This action cannot be undone. A room with admitted patients
+                cannot be deleted.
+            </p>
+
+            <form method="POST" class="form-actions">
+                {% csrf_token %}
+
+                <a href="{% url 'room_list' %}" class="cancel-button">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        class="save-patient-button"
+                        style="background:#dc5555;">
+                    Yes, Delete Room
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

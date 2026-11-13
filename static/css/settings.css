@@ -1,0 +1,1670 @@
+
+/* =========================================
+   VITACARE SETTINGS PAGE
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #17243b;
+}
+
+body {
+    background: #f4f7fb;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    min-height: 100vh;
+    padding: 22px 14px;
+    background: linear-gradient(180deg, #073b78 0%, #062b5b 100%);
+    color: #fff;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 8px 20px;
+}
+
+.brand-logo {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e8f5ff;
+    color: #0875d1;
+    font-size: 25px;
+}
+
+.brand-text h2 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: .5px;
+    color: #fff;
+}
+
+.brand-text p {
+    margin: 3px 0 0;
+    color: #d8e8fa;
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.sidebar-line {
+    height: 1px;
+    background: rgba(255,255,255,.18);
+    margin: 4px 4px 18px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.sidebar-menu .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 45px;
+    padding: 0 13px;
+    border-radius: 9px;
+    color: #e7f0fc;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.sidebar-menu .nav-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 17px;
+}
+
+.sidebar-menu .nav-link:hover,
+.sidebar-menu .nav-link.active {
+    color: #fff;
+    background: #0788df;
+}
+
+/* =========================================
+   SETTINGS HEADER
+========================================= */
+
+.settings-main {
+    flex: 1;
+    min-width: 0;
+    background: #f5f8fc;
+}
+
+.settings-header {
+    min-height: 112px;
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #fff;
+    border-bottom: 1px solid #dce7f5;
+}
+
+.settings-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.settings-heading-icon {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    color: #0875e8;
+    background: #e7f1ff;
+    border-radius: 14px;
+    font-size: 29px;
+}
+
+.settings-heading h1 {
+    margin: 0;
+    font-size: 29px;
+    color: #101b35;
+    font-weight: 750;
+}
+
+.settings-heading p {
+    margin: 6px 0 0;
+    color: #536783;
+    font-size: 14px;
+}
+
+.settings-header-right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.settings-header-right > i {
+    color: #344963;
+    font-size: 22px;
+}
+
+.settings-admin-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 15px;
+    border-radius: 30px;
+    background: #f1f5fc;
+    color: #17243d;
+    font-weight: 650;
+    font-size: 14px;
+}
+
+.settings-admin-chip i {
+    font-size: 22px;
+}
+
+/* =========================================
+   MESSAGES
+========================================= */
+
+.settings-messages {
+    padding: 12px 24px 0;
+}
+
+.settings-message {
+    padding: 12px 16px;
+    margin-bottom: 9px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.settings-message.success {
+    background: #e2f8ec;
+    color: #168348;
+}
+
+.settings-message.error {
+    background: #ffe8e8;
+    color: #c62828;
+}
+
+.settings-message.warning {
+    background: #fff5dc;
+    color: #805b00;
+}
+
+.settings-message.info {
+    background: #e8f2ff;
+    color: #0759ad;
+}
+
+/* =========================================
+   SETTINGS LAYOUT
+========================================= */
+
+.settings-layout {
+    display: grid;
+    grid-template-columns: 275px minmax(0, 1fr);
+    gap: 23px;
+    padding: 26px 24px;
+    align-items: start;
+    width: 100%;
+}
+
+.settings-menu {
+    background: #fff;
+    border: 1px solid #e3ebf5;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 5px 18px rgba(25,65,115,.07);
+}
+
+.settings-menu-item {
+    min-height: 62px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #172238;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    transition: .2s;
+}
+
+.settings-menu-item:last-child {
+    margin-bottom: 0;
+}
+
+.settings-menu-item i {
+    width: 22px;
+    text-align: center;
+    font-size: 21px;
+    color: #52647d;
+}
+
+.settings-menu-item:hover {
+    background: #f1f6ff;
+    color: #076ce0;
+}
+
+.settings-menu-item.selected {
+    background: #0788df;
+    color: #fff;
+}
+
+.settings-menu-item.selected i {
+    color: #fff;
+}
+
+.settings-content {
+    min-width: 0;
+}
+
+/* =========================================
+   SETTINGS CARD
+========================================= */
+
+.settings-card {
+    width: 100%;
+    min-height: 560px;
+    padding: 26px 28px;
+    background: #fff;
+    border: 1px solid #e3ebf5;
+    border-radius: 17px;
+    box-shadow: 0 5px 20px rgba(25,65,115,.07);
+    overflow: hidden;
+}
+
+.settings-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.settings-card-icon {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e4f0ff;
+    color: #0871e5;
+    font-size: 28px;
+}
+
+.settings-card-heading h2 {
+    margin: 0;
+    color: #111a30;
+    font-size: 23px;
+    font-weight: 750;
+}
+
+.settings-card-heading p {
+    margin: 5px 0 0;
+    color: #536783;
+    font-size: 13px;
+}
+
+.settings-divider {
+    height: 1px;
+    background: #e1e9f3;
+    margin: 21px 0;
+}
+
+/* =========================================
+   ADMIN PROFILE
+========================================= */
+
+.admin-profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 5px 8px 22px;
+}
+
+.admin-avatar {
+    width: 82px;
+    height: 82px;
+    flex: 0 0 82px;
+    border-radius: 50%;
+    background: #d9eaff;
+    display: grid;
+    place-items: center;
+    color: #0870df;
+}
+
+.admin-avatar i {
+    font-size: 53px;
+}
+
+.admin-summary-details h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #101a30;
+}
+
+.admin-name-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-role-badge {
+    padding: 6px 11px;
+    background: #e0efff;
+    color: #086bd9;
+    border-radius: 25px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.admin-summary-details p {
+    margin: 10px 0 0;
+    color: #536783;
+    font-size: 13px;
+}
+
+.admin-summary-details p i {
+    margin-right: 8px;
+}
+
+/* =========================================
+   DJANGO FORMS
+========================================= */
+
+.settings-card form p {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin: 0 0 17px;
+    min-width: 0;
+}
+
+.settings-card form p label {
+    color: #152139;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.settings-card form p input,
+.settings-card form p select,
+.settings-card form p textarea {
+    width: 100%;
+    min-height: 43px;
+    padding: 9px 12px;
+    border: 1px solid #cbd8e9;
+    border-radius: 8px;
+    background: #fff;
+    color: #17243b;
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+.settings-card form p textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+.settings-card form p input:focus,
+.settings-card form p select:focus,
+.settings-card form p textarea:focus {
+    border-color: #0875ed;
+    box-shadow: 0 0 0 3px rgba(8,117,237,.10);
+}
+
+.settings-card form p .helptext {
+    color: #718096;
+    font-size: 11px;
+}
+
+.settings-card form p ul.errorlist {
+    margin: 0;
+    padding-left: 18px;
+    color: #d93025;
+    font-size: 12px;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.settings-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.settings-save-btn,
+.password-update-btn {
+    min-height: 42px;
+    padding: 0 17px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: #0875ed;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.settings-save-btn:hover {
+    background: #0563ce;
+    color: #fff;
+}
+
+.password-section h3 {
+    margin: 0 0 7px;
+    color: #17243b;
+    font-size: 17px;
+}
+
+.password-section p {
+    color: #64748b;
+    font-size: 13px;
+    margin: 0 0 14px;
+}
+
+.password-update-btn {
+    border: 1px solid #0875ed;
+    color: #0871e5;
+    background: #fff;
+}
+
+.password-update-btn:hover {
+    color: #fff;
+    background: #0875ed;
+}
+
+/* =========================================
+   USER MANAGEMENT
+========================================= */
+
+.user-management-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 13px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.user-management-top form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    flex: 1;
+}
+
+.user-management-top input {
+    min-height: 42px;
+    max-width: 280px;
+    width: 100%;
+    padding: 0 12px;
+    border: 1px solid #cbd8e9;
+    border-radius: 8px;
+}
+
+.settings-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.settings-table th {
+    background: #e8f1ff;
+    color: #183b68;
+    padding: 13px 11px;
+    text-align: left;
+}
+
+.settings-table td {
+    padding: 13px 11px;
+    border-bottom: 1px solid #e5eaf2;
+    color: #35465e;
+}
+
+.status-active,
+.status-inactive {
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status-active {
+    background: #e2f8ec;
+    color: #168348;
+}
+
+.status-inactive {
+    background: #ffe8e8;
+    color: #c62828;
+}
+
+.table-action {
+    display: inline-block;
+    padding: 6px 9px;
+    border: 0;
+    border-radius: 6px;
+    background: #e8f2ff;
+    color: #0871e5;
+    font-size: 11px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.table-action:hover {
+    background: #d6e8ff;
+}
+
+.inline-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.empty-table {
+    text-align: center;
+    padding: 24px !important;
+    color: #718096 !important;
+}
+
+/* =========================================
+   PLACEHOLDER
+========================================= */
+
+.settings-placeholder-content {
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #61728a;
+}
+
+.settings-placeholder-content > i {
+    font-size: 52px;
+    color: #0875ed;
+}
+
+.settings-placeholder-content h3 {
+    color: #17243b;
+    margin: 16px 0 5px;
+}
+
+.settings-placeholder-content p {
+    max-width: 430px;
+    line-height: 1.6;
+    font-size: 13px;
+}
+
+/* =========================================
+   ABOUT SYSTEM
+========================================= */
+
+.about-brand-card {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    padding: 25px 28px;
+    margin-bottom: 23px;
+    background: linear-gradient(110deg,#e8f2ff,#f2f7ff);
+    border: 1px solid #d8e8ff;
+    border-radius: 15px;
+}
+
+.about-brand-icon {
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#0789f5,#0065d5);
+    border-radius: 22px;
+    color: #fff;
+    font-size: 47px;
+}
+
+.about-brand-divider {
+    width: 2px;
+    height: 90px;
+    background: #b8d0f0;
+}
+
+.about-brand-details {
+    flex: 1;
+}
+
+.about-brand-details h1 {
+    margin: 0 0 5px;
+    color: #10264c;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.about-brand-details p {
+    margin: 0;
+    color: #405a7d;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.about-version {
+    padding: 9px 15px;
+    background: #d3e8ff;
+    color: #006bd6;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.about-information-table {
+    width: 100%;
+    margin-bottom: 23px;
+    overflow: hidden;
+    border: 1px solid #dce7f5;
+    border-radius: 11px;
+}
+
+.about-info-row {
+    display: grid;
+    grid-template-columns: 36% 64%;
+    min-height: 52px;
+    border-bottom: 1px solid #dce7f5;
+}
+
+.about-info-row:last-child {
+    border-bottom: 0;
+}
+
+.about-info-label {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px 18px;
+    background: #f8faff;
+    border-right: 1px solid #dce7f5;
+    color: #152b4e;
+}
+
+.about-info-label i {
+    color: #405879;
+    font-size: 19px;
+}
+
+.about-info-label strong {
+    font-size: 13px;
+}
+
+.about-info-value {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #263b5c;
+    font-size: 13px;
+}
+
+.about-description {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 19px;
+    margin-bottom: 22px;
+    background: #f4f8ff;
+    border: 1px solid #dce9fb;
+    border-radius: 12px;
+}
+
+.about-description-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    display: grid;
+    place-items: center;
+    color: #0875df;
+    background: #dfedff;
+    border-radius: 11px;
+    font-size: 23px;
+}
+
+.about-description h3 {
+    margin: 0 0 7px;
+    color: #10264c;
+    font-size: 16px;
+}
+
+.about-description p {
+    margin: 0;
+    color: #536782;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+.about-copyright {
+    padding: 19px 15px;
+    text-align: center;
+    background: #edfaf4;
+    border: 1px solid #c9efdc;
+    border-radius: 12px;
+}
+
+.copyright-heading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #087d48;
+    font-size: 13px;
+}
+
+.copyright-heading i {
+    font-size: 22px;
+}
+
+.about-copyright p {
+    margin: 10px 0 0;
+    color: #526780;
+    font-size: 12px;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1050px) {
+
+    .sidebar {
+        width: 220px;
+        min-width: 220px;
+    }
+
+    .settings-layout {
+        grid-template-columns: 230px minmax(0,1fr);
+        gap: 15px;
+        padding: 18px 14px;
+    }
+
+    .settings-card {
+        padding: 21px 18px;
+    }
+}
+
+@media (max-width: 800px) {
+
+    .dashboard-container {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+    }
+
+    .sidebar-menu {
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-menu {
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 5px;
+    }
+
+    .settings-menu-item {
+        min-height: 52px;
+        padding: 0 10px;
+        font-size: 12px;
+    }
+
+    .settings-header {
+        padding: 17px;
+    }
+}
+
+@media (max-width: 520px) {
+
+    .settings-header-right {
+        display: none;
+    }
+
+    .settings-heading h1 {
+        font-size: 23px;
+    }
+
+    .settings-heading p {
+        font-size: 12px;
+    }
+
+    .settings-menu,
+    .sidebar-menu {
+        grid-template-columns: 1fr;
+    }
+
+    .about-brand-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .about-brand-divider {
+        width: 100%;
+        height: 1px;
+    }
+
+    .about-info-row {
+        grid-template-columns: 1fr;
+    }
+
+    .about-info-label {
+        border-right: 0;
+        border-bottom: 1px solid #dce7f5;
+    }
+
+    .about-description {
+        flex-direction: column;
+    }
+
+    .copyright-heading {
+        flex-direction: column;
+    }
+
+    .user-management-top {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .user-management-top form {
+        flex-wrap: wrap;
+    }
+}
+
+/* =========================================
+   VITACARE BACKUP & RESTORE
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+.settings-main {
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    background: #f3f7fd;
+    color: #102b50;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+
+/* =========================================
+   TOP SETTINGS HEADER
+   ========================================= */
+
+.settings-header {
+    min-height: 130px;
+    padding: 25px 34px;
+    background: #ffffff;
+    border-bottom: 1px solid #dce7f5;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.settings-heading {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.settings-heading-icon {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 19px;
+    background: #e7f1ff;
+    color: #0875e8;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.settings-heading h1 {
+    margin: 0 0 6px;
+    color: #102b50;
+    font-size: 32px;
+    font-weight: 750;
+}
+
+.settings-heading p {
+    margin: 0;
+    color: #60758f;
+    font-size: 16px;
+}
+
+.settings-header-right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    color: #102b50;
+}
+
+.settings-header-right > i {
+    font-size: 25px;
+}
+
+.settings-admin-chip {
+    min-height: 48px;
+    padding: 9px 17px;
+    border: 1px solid #dce7f5;
+    border-radius: 30px;
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: #102b50;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.settings-admin-chip i {
+    font-size: 20px;
+}
+
+
+/* =========================================
+   SETTINGS PAGE TWO-COLUMN LAYOUT
+   ========================================= */
+
+.settings-layout {
+    display: grid;
+    grid-template-columns: 322px minmax(0, 1fr);
+    align-items: start;
+    gap: 26px;
+
+    padding: 30px 28px;
+    width: 100%;
+}
+
+
+/* =========================================
+   LEFT SETTINGS MENU
+   ========================================= */
+
+.settings-menu {
+    width: 100%;
+    padding: 15px;
+    background: #ffffff;
+    border: 1px solid #e0eaf6;
+    border-radius: 20px;
+    box-shadow: 0 7px 22px rgba(22, 55, 91, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.settings-menu-item {
+    min-height: 73px;
+    padding: 12px 17px;
+    border-radius: 12px;
+    text-decoration: none;
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    color: #142d4e;
+    font-size: 15px;
+    font-weight: 650;
+
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.settings-menu-item i {
+    width: 27px;
+    text-align: center;
+    color: #60758f;
+    font-size: 22px;
+}
+
+.settings-menu-item:hover {
+    background: #edf5ff;
+    color: #0875e8;
+}
+
+.settings-menu-item.selected {
+    background: #087ee8;
+    color: #ffffff;
+}
+
+.settings-menu-item.selected i {
+    color: #ffffff;
+}
+
+
+/* =========================================
+   RIGHT BACKUP CONTENT PANEL
+   ========================================= */
+
+.backup-content {
+    min-width: 0;
+    padding: 30px 24px;
+    background: #ffffff;
+    border: 1px solid #e0eaf6;
+    border-radius: 21px;
+    box-shadow: 0 7px 24px rgba(22, 55, 91, 0.06);
+}
+
+
+/* =========================================
+   BACKUP PAGE TITLE
+   ========================================= */
+
+.backup-page-heading {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e1eaf5;
+    margin-bottom: 20px;
+}
+
+.backup-page-icon {
+    width: 75px;
+    height: 75px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #e8f2ff;
+    color: #0875e8;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+}
+
+.backup-page-heading h2 {
+    margin: 0 0 7px;
+    color: #102b50;
+    font-size: 29px;
+    font-weight: 750;
+}
+
+.backup-page-heading p {
+    margin: 0;
+    color: #617792;
+    font-size: 15px;
+}
+
+
+/* =========================================
+   DJANGO SUCCESS / ERROR MESSAGES
+   ========================================= */
+
+.backup-messages {
+    margin-bottom: 18px;
+}
+
+.backup-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.backup-message.success {
+    color: #087b48;
+    background: #e7f8ef;
+    border: 1px solid #b9ebcf;
+}
+
+.backup-message.error {
+    color: #b42318;
+    background: #fff0ef;
+    border: 1px solid #ffd1cc;
+}
+
+.backup-message.warning {
+    color: #946200;
+    background: #fff8e5;
+    border: 1px solid #f3df9e;
+}
+
+
+/* =========================================
+   BACKUP AND RESTORE CARDS
+   ========================================= */
+
+.backup-restore-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.backup-action-card {
+    min-width: 0;
+    min-height: 330px;
+    padding: 25px 22px;
+    border-radius: 20px;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.backup-system-card {
+    background: linear-gradient(145deg, #edf5ff, #e5f0ff);
+    border: 1.5px solid #a9d0ff;
+}
+
+.restore-system-card {
+    background: linear-gradient(145deg, #effbf5, #e5f8ed);
+    border: 1.5px solid #a9e9c5;
+}
+
+.action-icon {
+    width: 94px;
+    height: 94px;
+    margin-bottom: 15px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 43px;
+}
+
+.backup-icon {
+    background: #d5e8ff;
+    color: #0875dc;
+}
+
+.restore-icon {
+    background: #d4f2e1;
+    color: #07844b;
+}
+
+.backup-action-card h3 {
+    margin: 2px 0 12px;
+    color: #102b50;
+    font-size: 25px;
+    font-weight: 750;
+}
+
+.backup-action-card p {
+    max-width: 390px;
+    min-height: 48px;
+    margin: 0 auto 20px;
+    color: #47617f;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.backup-action-card form {
+    width: 100%;
+    max-width: 390px;
+    margin-top: auto;
+}
+
+
+/* =========================================
+   CREATE BACKUP BUTTON
+   ========================================= */
+
+.backup-button {
+    width: 100%;
+    min-height: 57px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(100deg, #0879ed, #0561d1);
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.backup-button:hover {
+    background: #075bbd;
+    transform: translateY(-1px);
+}
+
+.backup-button i {
+    font-size: 20px;
+}
+
+
+/* =========================================
+   RESTORE FILE INPUT
+   ========================================= */
+
+.file-input-wrapper {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.file-input-wrapper input {
+    display: block;
+    width: 100%;
+    min-height: 47px;
+    padding: 9px 10px;
+    border: 1px solid #cbdcf0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #233e5e;
+    font-size: 14px;
+}
+
+.file-input-wrapper input::file-selector-button {
+    padding: 6px 11px;
+    margin-right: 9px;
+    border: 1px solid #aabbd0;
+    border-radius: 5px;
+    background: #f3f6fa;
+    color: #183655;
+    cursor: pointer;
+}
+
+.restore-button {
+    width: 100%;
+    min-height: 57px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 12px;
+    background: #07864b;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.restore-button:hover {
+    background: #056c3c;
+    transform: translateY(-1px);
+}
+
+.restore-button i {
+    font-size: 20px;
+}
+
+
+/* =========================================
+   BACKUP HISTORY CARD
+   ========================================= */
+
+.backup-history-card {
+    width: 100%;
+    padding: 23px 20px;
+    background: #ffffff;
+    border: 1px solid #e0eaf6;
+    border-radius: 19px;
+    box-shadow: 0 5px 18px rgba(22, 55, 91, 0.05);
+}
+
+.history-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.history-heading i {
+    color: #0879ed;
+    font-size: 31px;
+}
+
+.history-heading h3 {
+    margin: 0;
+    color: #102b50;
+    font-size: 23px;
+    font-weight: 750;
+}
+
+
+/* =========================================
+   HISTORY TABLE
+   ========================================= */
+
+.history-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.backup-history-table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border: 1px solid #d9e6f5;
+    border-radius: 12px;
+}
+
+.backup-history-table thead {
+    background: #e1edfc;
+}
+
+.backup-history-table th {
+    padding: 15px 14px;
+    background: #e1edfc;
+    color: #102b50;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.backup-history-table td {
+    padding: 14px;
+    border-top: 1px solid #e7edf5;
+    color: #263f5e;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.backup-file-name {
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.backup-file-name i {
+    margin-right: 8px;
+    color: #526b88;
+    font-size: 19px;
+}
+
+.backup-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.backup-actions form {
+    margin: 0;
+}
+
+.download-button,
+.delete-button {
+    min-height: 39px;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.download-button {
+    background: #0879ed;
+}
+
+.download-button:hover {
+    background: #075fc2;
+}
+
+.delete-button {
+    background: #e43e3e;
+}
+
+.delete-button:hover {
+    background: #bd2929;
+}
+
+
+/* =========================================
+   EMPTY BACKUP HISTORY
+   ========================================= */
+
+.empty-history {
+    height: 125px;
+    text-align: center !important;
+    color: #8293a8 !important;
+}
+
+.empty-history i {
+    display: block;
+    margin-bottom: 7px;
+    color: #9aabc0;
+    font-size: 27px;
+}
+
+.empty-history span,
+.empty-history small {
+    display: block;
+}
+
+.empty-history small {
+    margin-top: 5px;
+    color: #93a1b3;
+}
+
+
+/* =========================================
+   SECURITY NOTE
+   ========================================= */
+
+.backup-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #edf5ff;
+    color: #496582;
+    font-size: 13px;
+}
+
+.backup-note i {
+    color: #0879ed;
+    font-size: 18px;
+}
+
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 1200px) {
+    .settings-layout {
+        grid-template-columns: 270px minmax(0, 1fr);
+        gap: 18px;
+        padding: 22px 18px;
+    }
+
+    .backup-content {
+        padding: 23px 17px;
+    }
+
+    .backup-restore-grid {
+        gap: 13px;
+    }
+
+    .backup-action-card {
+        padding: 22px 15px;
+    }
+}
+
+@media (max-width: 900px) {
+    .settings-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .settings-menu-item {
+        min-height: 58px;
+        padding: 10px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 650px) {
+    .settings-header {
+        padding: 18px;
+        align-items: flex-start;
+    }
+
+    .settings-heading {
+        gap: 12px;
+    }
+
+    .settings-heading-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 23px;
+    }
+
+    .settings-heading h1 {
+        font-size: 24px;
+    }
+
+    .settings-heading p {
+        font-size: 13px;
+    }
+
+    .settings-header-right {
+        gap: 10px;
+    }
+
+    .settings-admin-chip {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .settings-layout {
+        padding: 15px 12px;
+    }
+
+    .settings-menu {
+        grid-template-columns: 1fr;
+    }
+
+    .backup-content {
+        padding: 18px 13px;
+    }
+
+    .backup-page-heading h2 {
+        font-size: 23px;
+    }
+
+    .backup-page-icon {
+        width: 57px;
+        height: 57px;
+        font-size: 27px;
+    }
+
+    .backup-restore-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .backup-action-card {
+        min-height: 310px;
+    }
+
+    .backup-history-card {
+        padding: 18px 12px;
+    }
+
+    .history-heading h3 {
+        font-size: 20px;
+    }
+}

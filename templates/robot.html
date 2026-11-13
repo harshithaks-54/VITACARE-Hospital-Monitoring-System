@@ -1,0 +1,853 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Robot | VITACARE</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/robot.css' %}?v=21">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+{% include 'partials/sidebar.html' %}
+
+<main class="robot-main">
+
+    <!-- HEADER -->
+    <header class="robot-header">
+        <div class="robot-heading">
+            <span class="robot-heading-icon"><i class="bi bi-robot"></i></span>
+            <div>
+                <h1>Delivery Robot</h1>
+                <p>Automated Medicine Delivery with Patient Verification</p>
+            </div>
+        </div>
+        <div class="robot-admin">
+            <i class="bi bi-bell"></i>
+            <i class="bi bi-person-circle"></i>
+            <span>Admin</span>
+        </div>
+    </header>
+
+    <!-- DJANGO MESSAGES -->
+    {% if messages %}
+    <div class="robot-messages">
+        {% for message in messages %}
+        <div class="robot-message">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- SUMMARY CARDS -->
+    <section class="robot-stats">
+
+        <button type="button" class="robot-stat"
+                onclick="goToSection('robotNavigation')">
+            <span class="robot-stat-icon blue">
+                <i class="bi bi-robot"></i>
+            </span>
+            <span class="robot-stat-info">
+                <span class="robot-stat-label">Robot Status</span>
+                <strong class="robot-stat-value robot-ready">
+                    {{ robot_status|default:"Idle" }}
+                </strong>
+            </span>
+        </button>
+
+        <button type="button" class="robot-stat"
+                onclick="goToSection('deliveryHistory')">
+            <span class="robot-stat-icon blue">
+                <i class="bi bi-capsule"></i>
+            </span>
+            <span class="robot-stat-info">
+                <span class="robot-stat-label">Today's Deliveries</span>
+                <strong class="robot-stat-value">
+                    {{ today_deliveries_count|default:0 }}
+                </strong>
+            </span>
+        </button>
+
+        <button type="button" class="robot-stat"
+                onclick="filterHistory('Collected')">
+            <span class="robot-stat-icon green">
+                <i class="bi bi-check-circle"></i>
+            </span>
+            <span class="robot-stat-info">
+                <span class="robot-stat-label">Completed</span>
+                <strong class="robot-stat-value">
+                    {{ completed_count|default:0 }}
+                </strong>
+            </span>
+        </button>
+
+        <button type="button" class="robot-stat"
+                onclick="filterHistory('In Progress')">
+            <span class="robot-stat-icon purple">
+                <i class="bi bi-hourglass-split"></i>
+            </span>
+            <span class="robot-stat-info">
+                <span class="robot-stat-label">In Progress</span>
+                <strong class="robot-stat-value">
+                    {{ in_progress_count|default:0 }}
+                </strong>
+            </span>
+        </button>
+
+    </section>
+
+    <!-- MAIN DASHBOARD PANELS -->
+    <section class="robot-content-grid">
+
+        <!-- DELIVERY NAVIGATION -->
+        <section class="robot-panel navigation-panel" id="robotNavigation">
+
+            <div class="robot-panel-title">
+                <span><i class="bi bi-map"></i> Delivery Navigation (Simulation)</span>
+                <span class="simulation-badge">
+                    <i class="bi bi-info-circle"></i> Simulation Mode
+                </span>
+            </div>
+
+            <div class="robot-map">
+
+                <svg viewBox="0 0 700 400"
+                     preserveAspectRatio="xMidYMid meet"
+                     role="img"
+                     aria-label="Illustrative hospital floor navigation map">
+
+                    <!-- OUTER MAP -->
+                    <rect x="10" y="10" width="680" height="380"
+                          class="map-boundary"/>
+
+                    <!-- TOP ROOMS -->
+                    <rect class="map-room" x="22" y="22" width="145" height="137"/>
+                    <rect class="map-room" x="178" y="22" width="145" height="137"/>
+                    <rect class="map-room" x="334" y="22" width="145" height="137"/>
+                    <rect class="map-room" x="490" y="22" width="198" height="137"/>
+
+                    <!-- MAIN CORRIDOR -->
+                    <rect x="22" y="165" width="666" height="69"
+                          class="map-corridor"/>
+
+                    <!-- BOTTOM ROOMS -->
+                    <rect class="map-room map-base" x="22" y="240" width="145" height="138"/>
+                    <rect class="map-room" x="178" y="240" width="145" height="138"/>
+                    <rect class="map-room" x="334" y="240" width="145" height="138"/>
+                    <rect class="map-room" x="490" y="240" width="198" height="138"/>
+
+                    <!-- ROOM NAMES -->
+                    <text class="map-room-label" x="94" y="82">Room 101</text>
+                    <text class="map-bed-icon" x="94" y="112">▰</text>
+
+                    <text class="map-room-label" x="250" y="82">Room 102</text>
+                    <text class="map-bed-icon" x="250" y="112">▰</text>
+
+                    <text class="map-room-label" x="406" y="82">Room 103</text>
+                    <text class="map-bed-icon" x="406" y="112">▰</text>
+
+                    <text class="map-room-label" x="589" y="82">Room 104</text>
+                    <text class="map-bed-icon" x="589" y="112">▰</text>
+
+                    <text class="map-room-label" x="94" y="304">Base</text>
+                    <text class="map-small-label" x="94" y="326">(Charging)</text>
+
+                    <text class="map-room-label" x="250" y="310">Nurse Station</text>
+                    <text class="map-room-label" x="406" y="310">Room 105</text>
+                    <text class="map-room-label" x="589" y="310">Room 106</text>
+
+                    <!-- ROUTE -->
+                    <path id="mapRoute" class="map-route"
+                          d="M94 270 L94 200 L250 200 L406 200 L406 145"/>
+
+                    <!-- ROBOT -->
+                    <circle cx="250" cy="200" r="29"
+                            class="robot-location-circle"/>
+                    <text x="229" y="212" class="map-robot">🤖</text>
+
+                    <!-- SELECTED ROOM MARKER -->
+                    <g id="mapSelectedRoom" visibility="hidden">
+                        <rect id="selectedRoomOutline"
+                              x="334" y="22" width="145" height="137"
+                              class="map-room-selected"/>
+                        <circle id="selectedRoomPin"
+                                cx="406" cy="29" r="9"
+                                class="map-destination-pin"/>
+                    </g>
+                </svg>
+
+                <div class="map-destination">
+                    <span><i class="bi bi-geo-alt-fill"></i> Selected Destination</span>
+                    <strong id="navigationRoom">No destination selected</strong>
+                </div>
+
+                <p class="map-note">
+                    Illustrative floor plan. Robot movement is simulated.
+                </p>
+
+            </div>
+        </section>
+
+        <!-- CURRENT DELIVERY -->
+        <section class="robot-panel current-panel" id="currentDelivery">
+
+            <div class="robot-panel-title">
+                <span><i class="bi bi-box-seam"></i> Current Delivery</span>
+            </div>
+
+            <div class="robot-details">
+
+                <div class="delivery-detail">
+                    <span><i class="bi bi-person"></i> Patient</span>
+                    <strong id="selectedPatient">Not selected</strong>
+                </div>
+
+                <div class="delivery-detail">
+                    <span><i class="bi bi-hospital"></i> Room</span>
+                    <strong id="selectedRoom">Not selected</strong>
+                </div>
+
+                <div class="delivery-detail">
+                    <span><i class="bi bi-capsule"></i> Medicine</span>
+                    <strong id="selectedMedicine">Not entered</strong>
+                </div>
+
+                <div class="delivery-detail">
+                    <span><i class="bi bi-prescription2"></i> Dosage / Qty</span>
+                    <strong id="selectedDosage">--</strong>
+                </div>
+
+                <div class="progress-heading">
+                    <strong>Delivery Progress</strong>
+                    <strong id="progressValue">0%</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <!-- DELIVERY STAGES -->
+                <div class="delivery-steps">
+                    <div class="delivery-step active" data-step="0">
+                        <span class="step-dot"></span>
+                        <span>Order Received</span>
+                        <small>--</small>
+                    </div>
+
+                    <div class="delivery-step" data-step="1">
+                        <span class="step-dot"></span>
+                        <span>Dispatched</span>
+                        <small>--</small>
+                    </div>
+
+                    <div class="delivery-step" data-step="2">
+                        <span class="step-dot"></span>
+                        <span>Arrived (Simulated)</span>
+                        <small>--</small>
+                    </div>
+
+                    <div class="delivery-step" data-step="3">
+                        <span class="step-dot"></span>
+                        <span>Collected</span>
+                        <small>--</small>
+                    </div>
+                </div>
+
+                <!-- CREATE DELIVERY FORM -->
+                <form method="POST"
+                      action="{% url 'create_delivery' %}"
+                      id="createDeliveryForm">
+
+                    {% csrf_token %}
+
+                    <label class="delivery-select-label" for="patientSelect">
+                        Select Patient
+                    </label>
+
+                    <select class="robot-select"
+                            id="patientSelect"
+                            name="patient_id"
+                            required>
+
+                        <option value="">Choose patient</option>
+
+                        {% for patient in patients %}
+                        <option value="{{ patient.pk }}">
+                            {{ patient.name }} ({{ patient.patient_id }})
+                        </option>
+                        {% empty %}
+                        <option value="" disabled>
+                            No admitted patients available
+                        </option>
+                        {% endfor %}
+
+                    </select>
+
+                    <label class="delivery-select-label" for="medicineName">
+                        Medicine Name
+                    </label>
+
+                    <input type="text"
+                           class="robot-select"
+                           id="medicineName"
+                           name="medicine_name"
+                           placeholder="Enter medicine name"
+                           required>
+
+                    <label class="delivery-select-label" for="dosage">
+                        Dosage
+                    </label>
+
+                    <input type="text"
+                           class="robot-select"
+                           id="dosage"
+                           name="dosage"
+                           placeholder="Example: 500 mg"
+                           required>
+
+                    <label class="delivery-select-label" for="quantity">
+                        Quantity
+                    </label>
+
+                    <input type="number"
+                           class="robot-select"
+                           id="quantity"
+                           name="quantity"
+                           min="1"
+                           placeholder="Enter quantity"
+                           required>
+
+                    <label class="delivery-select-label" for="preparedBy">
+                        Nurse Name
+                    </label>
+
+                    <input type="text"
+                           class="robot-select"
+                           id="preparedBy"
+                           name="prepared_by"
+                           placeholder="Enter nurse name"
+                           required>
+
+                    <p class="form-hint" id="patientMessage">
+                        Select a patient and enter the medicine details.
+                    </p>
+
+                    <button class="robot-action-button"
+                            type="submit"
+                            id="createDeliveryButton"
+                            disabled>
+                        <i class="bi bi-plus-circle"></i>
+                        Create Delivery Order
+                    </button>
+
+                </form>
+
+                <!-- DELIVERY STATUS ACTIONS -->
+                {% if latest_delivery %}
+
+                <div class="active-delivery-actions">
+
+                    <p class="active-order-label">
+                        Current Order #{{ latest_delivery.id }}
+                        · {{ latest_delivery.status }}
+                    </p>
+
+                    {% if latest_delivery.status == "Order Received" %}
+
+                    <form method="POST"
+                          action="{% url 'delivery_action' latest_delivery.id %}">
+
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="dispatch">
+
+                        <button class="robot-action-button" type="submit">
+                            <i class="bi bi-play-fill"></i> Dispatch Robot
+                        </button>
+                    </form>
+
+                    {% elif latest_delivery.status == "Dispatched" %}
+
+                    <form method="POST"
+                          action="{% url 'delivery_action' latest_delivery.id %}">
+
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="arrive">
+
+                        <button class="robot-action-button" type="submit">
+                            <i class="bi bi-geo-alt"></i> Simulate Arrival
+                        </button>
+                    </form>
+
+                    {% elif latest_delivery.status == "Arrived" %}
+
+                    <p class="form-hint">
+                        Complete patient verification to confirm collection.
+                    </p>
+
+                    {% endif %}
+
+                </div>
+                {% endif %}
+
+            </div>
+        </section>
+
+        <!-- PATIENT VERIFICATION -->
+        <section class="robot-panel verify-panel" id="patientVerification">
+
+            <div class="robot-panel-title">
+                <span><i class="bi bi-shield-check"></i> Patient Verification</span>
+            </div>
+
+            <div class="verify-tabs">
+
+                <button type="button"
+                        class="verify-tab active"
+                        id="rfidTab"
+                        onclick="switchVerification('rfid')">
+                    <i class="bi bi-broadcast"></i> RFID Scan
+                </button>
+
+                <button type="button"
+                        class="verify-tab"
+                        id="pinTab"
+                        onclick="switchVerification('pin')">
+                    <i class="bi bi-keyboard"></i> PIN Verification
+                </button>
+
+            </div>
+
+            <div class="verify-body" id="rfidContent">
+
+                <div class="verify-icon">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <h3>Scan Patient RFID Card</h3>
+
+                <p>
+                    Place the patient's RFID card on the reader
+                    (simulation).
+                </p>
+
+                {% if latest_delivery and latest_delivery.status == "Arrived" %}
+
+                <form method="POST"
+                      action="{% url 'delivery_action' latest_delivery.id %}"
+                      id="collectForm">
+
+                    {% csrf_token %}
+
+                    <input type="hidden" name="action" value="collect">
+
+                    <input type="hidden"
+                           name="verification_method"
+                           value="RFID">
+
+                    <button class="robot-action-button"
+                            type="submit"
+                            onclick="return confirm('Simulate RFID verification and mark this delivery as collected?')">
+
+                        <i class="bi bi-upc-scan"></i>
+                        Simulate RFID Scan
+                    </button>
+
+                </form>
+
+                {% else %}
+
+                <button class="robot-action-button" type="button" disabled>
+                    Available after simulated arrival
+                </button>
+
+                {% endif %}
+
+            </div>
+
+            <div class="verify-body" id="pinContent" hidden>
+
+                <div class="verify-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+
+                <h3>PIN Verification</h3>
+
+                <p>
+                    Secure PIN verification is not configured yet.
+                </p>
+
+                <input class="robot-pin-input"
+                       type="password"
+                       placeholder="PIN setup required"
+                       disabled>
+
+            </div>
+
+        </section>
+
+    </section>
+
+    <!-- DELIVERY HISTORY -->
+    <section class="robot-history" id="deliveryHistory">
+
+        <div class="robot-panel-title">
+            <span><i class="bi bi-clock-history"></i> Delivery History</span>
+
+            <button type="button"
+                    class="history-view-all"
+                    onclick="clearHistoryFilter()">
+                View All
+            </button>
+        </div>
+
+        <div class="history-table-wrap">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Patient</th>
+                        <th>Room</th>
+                        <th>Medicine</th>
+                        <th>Dispatch Time</th>
+                        <th>Completion Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="historyBody">
+
+                    {% for delivery in deliveries %}
+
+                    <tr data-status="{% if delivery.status == 'Collected' %}Collected{% elif delivery.status == 'Cancelled' %}Cancelled{% else %}In Progress{% endif %}">
+
+                        <td>{{ delivery.id }}</td>
+
+                        <td>{{ delivery.patient.name }}</td>
+
+                        <td>Room {{ delivery.room.room_number }}</td>
+
+                        <td>
+                            {{ delivery.medicine_name }}
+                            <small>{{ delivery.dosage }} × {{ delivery.quantity }}</small>
+                        </td>
+
+                        <td>
+                            {% if delivery.dispatched_at %}
+                                {{ delivery.dispatched_at|date:"h:i A" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if delivery.collected_at %}
+                                {{ delivery.collected_at|date:"h:i A" }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <span class="status-pill
+                                {% if delivery.status == 'Collected' %}status-completed
+                                {% elif delivery.status == 'Cancelled' %}status-cancelled
+                                {% else %}status-progress{% endif %}">
+                                {{ delivery.status }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="7" class="history-empty">
+                            No delivery records available yet.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </section>
+
+    <div id="robotNotice" role="status" aria-live="polite"></div>
+
+</main>
+
+<script>
+
+/* PATIENT SELECTION AND DETAILS FETCH */
+
+const patientSelect = document.getElementById("patientSelect");
+const createButton = document.getElementById("createDeliveryButton");
+const patientMessage = document.getElementById("patientMessage");
+
+const medicineName = document.getElementById("medicineName");
+const dosage = document.getElementById("dosage");
+const quantity = document.getElementById("quantity");
+const preparedBy = document.getElementById("preparedBy");
+
+let patientHasRoom = false;
+
+
+/* VALIDATE DELIVERY FORM */
+
+function validateDeliveryForm() {
+
+    createButton.disabled = !(
+        patientSelect.value &&
+        patientHasRoom &&
+        medicineName.value.trim() &&
+        dosage.value.trim() &&
+        Number(quantity.value) >= 1 &&
+        preparedBy.value.trim()
+    );
+
+    document.getElementById("selectedMedicine").textContent =
+        medicineName.value.trim() || "Not entered";
+
+    document.getElementById("selectedDosage").textContent =
+        dosage.value.trim()
+            ? dosage.value.trim() + " / " + (quantity.value || "--")
+            : "--";
+}
+
+
+/* FETCH SELECTED PATIENT DETAILS */
+
+patientSelect.addEventListener("change", async function () {
+
+    const patientId = this.value;
+
+    patientHasRoom = false;
+    createButton.disabled = true;
+
+    document.getElementById("selectedPatient").textContent =
+        this.options[this.selectedIndex]?.text || "Not selected";
+
+    document.getElementById("selectedRoom").textContent = "Loading...";
+    document.getElementById("navigationRoom").textContent = "Loading...";
+
+    if (!patientId) {
+
+        resetPatientDetails();
+
+        patientMessage.textContent =
+            "Select a patient and enter the medicine details.";
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `/robot/patient-details/${patientId}/`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error("Unable to load patient details.");
+        }
+
+        document.getElementById("selectedPatient").textContent =
+            data.patient;
+
+        document.getElementById("selectedRoom").textContent =
+            data.room;
+
+        document.getElementById("navigationRoom").textContent =
+            data.has_room ? "Room " + data.room : "Not assigned";
+
+        patientHasRoom = data.has_room;
+
+        if (!patientHasRoom) {
+
+            patientMessage.textContent =
+                "This patient does not have an assigned room.";
+
+            updateMapDestination(null);
+
+            return;
+        }
+
+        patientMessage.textContent =
+            "Patient details loaded. Enter the medicine details.";
+
+        updateMapDestination(data.room);
+
+        validateDeliveryForm();
+
+    } catch (error) {
+
+        patientMessage.textContent = error.message;
+
+        showRobotNotice(error.message);
+    }
+});
+
+
+/* RESET PATIENT DETAILS */
+
+function resetPatientDetails() {
+
+    patientHasRoom = false;
+
+    document.getElementById("selectedPatient").textContent =
+        "Not selected";
+
+    document.getElementById("selectedRoom").textContent =
+        "Not selected";
+
+    document.getElementById("selectedMedicine").textContent =
+        "Not entered";
+
+    document.getElementById("selectedDosage").textContent = "--";
+
+    document.getElementById("navigationRoom").textContent =
+        "No destination selected";
+
+    updateMapDestination(null);
+
+    validateDeliveryForm();
+}
+
+
+/* UPDATE MEDICINE DETAILS LIVE */
+
+medicineName.addEventListener("input", validateDeliveryForm);
+dosage.addEventListener("input", validateDeliveryForm);
+quantity.addEventListener("input", validateDeliveryForm);
+preparedBy.addEventListener("input", validateDeliveryForm);
+
+
+/* DESTINATION LABEL - THE MAP IS ILLUSTRATIVE */
+
+function updateMapDestination(room) {
+
+    document.getElementById("navigationRoom").textContent =
+        room && room !== "Not assigned"
+            ? "Room " + room
+            : "No destination selected";
+
+    const roomMap = {
+
+        "101": { x: 22, y: 22, w: 145, h: 137, cx: 94 },
+        "102": { x: 178, y: 22, w: 145, h: 137, cx: 250 },
+        "103": { x: 334, y: 22, w: 145, h: 137, cx: 406 },
+        "104": { x: 490, y: 22, w: 198, h: 137, cx: 589 },
+        "105": { x: 334, y: 240, w: 145, h: 138, cx: 406 },
+        "106": { x: 490, y: 240, w: 198, h: 138, cx: 589 }
+
+    };
+
+    const match = String(room).match(/\d+/);
+
+    const selected = match ? roomMap[match[0]] : null;
+
+    const outline = document.getElementById("selectedRoomOutline");
+    const pin = document.getElementById("selectedRoomPin");
+    const group = document.getElementById("mapSelectedRoom");
+
+    if (selected) {
+
+        outline.setAttribute("x", selected.x);
+        outline.setAttribute("y", selected.y);
+        outline.setAttribute("width", selected.w);
+        outline.setAttribute("height", selected.h);
+
+        pin.setAttribute("cx", selected.cx);
+        pin.setAttribute("cy", selected.y + 8);
+
+        group.setAttribute("visibility", "visible");
+
+    } else {
+
+        group.setAttribute("visibility", "hidden");
+    }
+}
+
+
+/* VERIFICATION TABS */
+
+function switchVerification(type) {
+
+    const isRFID = type === "rfid";
+
+    document.getElementById("rfidTab").classList.toggle("active", isRFID);
+    document.getElementById("pinTab").classList.toggle("active", !isRFID);
+
+    document.getElementById("rfidContent").hidden = !isRFID;
+    document.getElementById("pinContent").hidden = isRFID;
+}
+
+
+/* SUMMARY CARD NAVIGATION */
+
+function goToSection(sectionId) {
+
+    const section = document.getElementById(sectionId);
+
+    if (!section) return;
+
+    section.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+
+    section.classList.add("robot-section-highlight");
+
+    setTimeout(() => {
+        section.classList.remove("robot-section-highlight");
+    }, 1400);
+}
+
+
+/* DELIVERY HISTORY FILTER */
+
+function filterHistory(status) {
+
+    goToSection("deliveryHistory");
+
+    document.querySelectorAll("#historyBody tr[data-status]")
+        .forEach(row => {
+            row.hidden = row.dataset.status !== status;
+        });
+
+    showRobotNotice(
+        status === "Collected"
+            ? "Showing completed deliveries."
+            : "Showing deliveries in progress."
+    );
+}
+
+
+function clearHistoryFilter() {
+
+    document.querySelectorAll("#historyBody tr[data-status]")
+        .forEach(row => row.hidden = false);
+
+    showRobotNotice("Showing all delivery records.");
+}
+
+
+/* NOTICE */
+
+function showRobotNotice(message) {
+
+    const notice = document.getElementById("robotNotice");
+
+    notice.textContent = message;
+    notice.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>

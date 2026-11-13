@@ -1,0 +1,439 @@
+
+/* =========================================
+   VITACARE - BACKUP AND RESTORE
+========================================= */
+
+.backup-header {
+    min-height: 130px;
+    padding: 25px 38px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5edf8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.backup-title {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.header-icon {
+    width: 66px;
+    height: 66px;
+    border-radius: 18px;
+    background: #e8f2ff;
+    color: #0876df;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+}
+
+.backup-title h1 {
+    margin: 0 0 8px;
+    color: #10264c;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.backup-title p {
+    margin: 0;
+    color: #63738e;
+    font-size: 16px;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    color: #263a5b;
+    font-size: 22px;
+}
+
+.admin-info span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border: 1px solid #dce7f5;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+
+/* MAIN CONTENT */
+
+.backup-content {
+    padding: 28px 38px;
+    background: #f3f7fd;
+    min-height: calc(100vh - 220px);
+}
+
+
+/* DJANGO MESSAGES */
+
+.message-container {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 13px 18px;
+    border-radius: 9px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.message.success {
+    background: #e4f7ed;
+    color: #087a43;
+}
+
+.message.error {
+    background: #fff0f0;
+    color: #b42318;
+}
+
+
+/* BACKUP AND RESTORE CARDS */
+
+.backup-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    margin-bottom: 28px;
+}
+
+.action-card {
+    min-height: 350px;
+    padding: 22px 35px 25px;
+    border: 2px solid;
+    border-radius: 17px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.backup-card {
+    background: linear-gradient(135deg, #edf5ff, #e6f1ff);
+    border-color: #bad8ff;
+}
+
+.restore-card {
+    background: linear-gradient(135deg, #effbf5, #e7f8ef);
+    border-color: #c4ead5;
+}
+
+.action-icon {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 55px;
+    margin-bottom: 12px;
+}
+
+.blue-icon {
+    background: #d7eaff;
+    color: #0874d7;
+}
+
+.green-icon {
+    background: #d5f2e2;
+    color: #078348;
+}
+
+.action-card h2 {
+    margin: 0 0 12px;
+    font-size: 27px;
+    color: #10264c;
+}
+
+.action-card p {
+    max-width: 420px;
+    margin: 0 0 23px;
+    color: #435675;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.action-card form {
+    width: 100%;
+    max-width: 420px;
+}
+
+.action-card input[type="file"] {
+    width: 100%;
+    margin-bottom: 13px;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid #cbd9eb;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.action-button {
+    width: 100%;
+    min-height: 57px;
+    border: none;
+    border-radius: 11px;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.action-button i {
+    margin-right: 9px;
+}
+
+.backup-button {
+    background: linear-gradient(90deg, #0874e8, #0062ce);
+}
+
+.backup-button:hover {
+    background: #0758b5;
+    transform: translateY(-2px);
+}
+
+.restore-button {
+    background: linear-gradient(90deg, #078b4c, #087c43);
+}
+
+.restore-button:hover {
+    background: #056b3a;
+    transform: translateY(-2px);
+}
+
+
+/* BACKUP HISTORY */
+
+.history-card {
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e1eaf6;
+    border-radius: 17px;
+    box-shadow: 0 5px 18px rgba(30, 65, 110, 0.06);
+}
+
+.history-heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: #0874d7;
+}
+
+.history-heading i {
+    font-size: 31px;
+}
+
+.history-heading h2 {
+    margin: 0;
+    color: #10264c;
+    font-size: 25px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.backup-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #dce7f5;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.backup-table th {
+    padding: 17px 16px;
+    background: #e3efff;
+    color: #142b4e;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.backup-table td {
+    padding: 15px 16px;
+    border-top: 1px solid #e4ebf5;
+    color: #344762;
+    font-size: 14px;
+}
+
+.backup-table th:nth-child(2),
+.backup-table th:nth-child(3),
+.backup-table th:nth-child(4),
+.backup-table td:nth-child(2),
+.backup-table td:nth-child(3),
+.backup-table td:nth-child(4) {
+    text-align: center;
+}
+
+.backup-table td:first-child i {
+    color: #0874d7;
+    margin-right: 8px;
+}
+
+
+/* TABLE ACTION BUTTONS */
+
+.table-actions {
+    white-space: nowrap;
+}
+
+.table-actions a,
+.table-actions button {
+    width: 43px;
+    height: 40px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 7px;
+    color: #ffffff;
+    font-size: 18px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.table-actions form {
+    display: inline;
+}
+
+.download-button {
+    background: #0874df;
+    margin-right: 9px;
+}
+
+.delete-button {
+    background: #ed514b;
+}
+
+.download-button:hover {
+    background: #075ab4;
+}
+
+.delete-button:hover {
+    background: #c8322d;
+}
+
+
+/* EMPTY HISTORY */
+
+.empty-history {
+    padding: 35px !important;
+    text-align: center !important;
+    color: #7c8ba2 !important;
+}
+
+.empty-history i {
+    font-size: 35px;
+    color: #8da4c2;
+}
+
+.empty-history p {
+    margin: 8px 0 4px;
+    font-weight: 600;
+}
+
+.empty-history span {
+    font-size: 13px;
+}
+
+
+/* INFORMATION AND FOOTER */
+
+.backup-note {
+    margin-top: 18px;
+    color: #65758d;
+    font-size: 13px;
+}
+
+.backup-note i {
+    margin-right: 6px;
+    color: #0874d7;
+}
+
+.backup-footer {
+    padding: 22px;
+    text-align: center;
+    color: #536a8b;
+    background: #edf4fd;
+    border-top: 1px solid #dce7f5;
+    font-size: 14px;
+}
+
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 900px) {
+
+    .backup-action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .backup-header {
+        padding: 22px;
+    }
+
+    .backup-content {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .backup-header {
+        align-items: flex-start;
+    }
+
+    .backup-title {
+        gap: 12px;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 25px;
+    }
+
+    .backup-title h1 {
+        font-size: 22px;
+    }
+
+    .backup-title p {
+        font-size: 13px;
+    }
+
+    .admin-info {
+        display: none;
+    }
+
+    .action-card {
+        padding: 22px 17px;
+    }
+
+    .history-card {
+        padding: 15px;
+    }
+
+    .history-heading h2 {
+        font-size: 20px;
+    }
+
+    .backup-table {
+        min-width: 650px;
+    }
+}

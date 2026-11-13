@@ -1,0 +1,248 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Room Management | VITACARE</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/patients.css' %}">
+    <link rel="stylesheet" href="{% static 'css/rooms.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    {% include "partials/sidebar.html" %}
+
+    <main class="patients-main">
+
+        <!-- HEADER -->
+        <div class="patients-header">
+
+            <div class="patients-heading">
+
+                <a href="{% url 'dashboard_home' %}"
+                   class="back-button"
+                   title="Back to Dashboard">
+                    <i class="bi bi-arrow-left"></i>
+                </a>
+
+                <div>
+                    <h1>Room Management</h1>
+                    <p>Manage hospital rooms and bed availability</p>
+                </div>
+
+            </div>
+
+            <div class="header-icons">
+                <i class="bi bi-bell"></i>
+                <i class="bi bi-person-circle"></i>
+            </div>
+
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <section class="room-summary">
+
+            <div class="room-summary-card">
+                <div class="room-icon room-blue">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div>
+                    <p>Total Rooms</p>
+                    <h2>{{ total_rooms }}</h2>
+                </div>
+            </div>
+
+            <div class="room-summary-card">
+                <div class="room-icon room-green">
+                    <i class="bi bi-door-open"></i>
+                </div>
+                <div>
+                    <p>Available Rooms</p>
+                    <h2>{{ available_rooms }}</h2>
+                </div>
+            </div>
+
+            <div class="room-summary-card">
+                <div class="room-icon room-orange">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <p>Occupied Beds</p>
+                    <h2>{{ occupied_beds }}</h2>
+                </div>
+            </div>
+
+            <div class="room-summary-card">
+                <div class="room-icon room-purple">
+                    <i class="bi bi-hospital"></i>
+                </div>
+                <div>
+                    <p>Available Beds</p>
+                    <h2>{{ available_beds }}</h2>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ROOM DETAILS -->
+        <section class="room-details-section">
+
+            <div class="room-toolbar">
+
+                <div>
+                    <h2>Room Details</h2>
+                    <p>View and manage hospital rooms</p>
+                </div>
+
+                <a href="{% url 'add_room' %}" class="add-room-button">
+                    <i class="bi bi-plus-lg"></i>
+                    Add Room
+                </a>
+
+            </div>
+
+            <!-- SEARCH -->
+            <form method="GET"
+                  action="{% url 'room_list' %}"
+                  class="room-search">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search by room number..."
+                    value="{{ search_query }}"
+                >
+
+                <button type="submit">Search</button>
+
+                {% if search_query %}
+                    <a href="{% url 'room_list' %}">Clear</a>
+                {% endif %}
+
+            </form>
+
+            <!-- MESSAGES -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="patient-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- ROOM TABLE -->
+            <div class="room-table-wrapper">
+
+                <table class="room-table">
+
+                    <thead>
+                        <tr>
+                            <th>Room Number</th>
+                            <th>Floor</th>
+                            <th>Bed Capacity</th>
+                            <th>Occupied Beds</th>
+                            <th>Available Beds</th>
+                            <th>Occupancy</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in room_data %}
+
+                        <tr>
+
+                            <td class="room-number">
+                                {{ item.room.room_number }}
+                            </td>
+
+                            <td>{{ item.room.floor }}</td>
+
+                            <td>{{ item.room.bed_capacity }}</td>
+
+                            <td>{{ item.occupied_beds }}</td>
+
+                            <td>{{ item.available_beds }}</td>
+
+                            <td>
+                                <div class="occupancy-cell">
+
+                                    <div class="occupancy-bar">
+                                        <div class="occupancy-fill"
+                                            data-occupancy="{{ item.occupancy }}"></div>  
+                                        </div>
+                                    </div>
+
+                                    <span>{{ item.occupancy }}%</span>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                {% if item.is_full %}
+                                    <span class="room-status full">Full</span>
+                                {% else %}
+                                    <span class="room-status available">Available</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="room-actions">
+
+                                <a href="{% url 'edit_room' item.room.pk %}"
+                                   class="action-edit"
+                                   title="Edit Room">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <a href="{% url 'delete_room' item.room.pk %}"
+                                   class="action-delete"
+                                   title="Delete Room">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="8" class="empty-patients">
+                                <i class="bi bi-building"></i>
+                                <p>No rooms found</p>
+                                <span>Add a room to view room details here.</span>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+<script src="{% static 'js/rooms.js' %}"></script>
+
+</body>
+</html>

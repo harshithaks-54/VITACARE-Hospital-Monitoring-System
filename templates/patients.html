@@ -1,0 +1,327 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Management | VITACARE</title>
+
+    <!-- Existing Dashboard CSS -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <!-- Patient Page CSS -->
+    <link rel="stylesheet" href="{% static 'css/patients.css' %}">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- LEFT SIDEBAR: SAME AS DASHBOARD -->
+    {% include "partials/sidebar.html" %}
+
+
+    <!-- RIGHT SIDE CONTENT -->
+    <main class="patients-main">
+
+        <!-- HEADER -->
+        <div class="patients-header">
+
+            <div class="patients-heading">
+
+                <a href="{% url 'dashboard_home' %}"
+                   class="back-button"
+                   title="Back to Dashboard">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                </a>
+
+                <div>
+                    <h1>Patient Management</h1>
+                    <p>Manage and view all registered patients</p>
+                </div>
+
+            </div>
+
+            <div class="header-icons">
+                <i class="bi bi-bell"></i>
+                <i class="bi bi-person-circle"></i>
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+        <section class="patient-summary">
+
+            <div class="patient-summary-card">
+
+                <div class="summary-icon blue">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <div>
+                    <p>Total Patients</p>
+                    <h2>{{ total_patients }}</h2>
+                </div>
+
+            </div>
+
+
+            <div class="patient-summary-card">
+
+                <div class="summary-icon green">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+
+                <div>
+                    <p>Admitted Patients</p>
+                    <h2>{{ admitted_patients }}</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PATIENT DETAILS SECTION -->
+        <section class="patient-details-section">
+
+
+            <!-- SECTION HEADER -->
+            <div class="patient-toolbar">
+
+                <div>
+                    <h2>Patient Details</h2>
+                    <p>View and manage patient information</p>
+                </div>
+
+                <a href="{% url 'add_patient' %}"
+                   class="add-patient-button">
+
+                    <i class="bi bi-plus-lg"></i>
+                    Add Patient
+
+                </a>
+
+            </div>
+
+
+            <!-- SEARCH BAR -->
+            <form method="GET"
+                  action="{% url 'patient_list' %}"
+                  class="patient-search">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="text"
+                    name="q"
+                    placeholder="Search by Patient ID or Name..."
+                    value="{{ search_query }}"
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+                {% if search_query %}
+                    <a href="{% url 'patient_list' %}"
+                       class="clear-search">
+                        Clear
+                    </a>
+                {% endif %}
+
+            </form>
+
+
+            <!-- SUCCESS / ERROR MESSAGES -->
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="patient-message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+
+            <!-- PATIENT TABLE -->
+            <div class="patient-table-wrapper">
+
+                <table class="patient-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Room</th>
+                            <th>Admission Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for patient in patients %}
+
+                        <tr>
+
+                            <td class="patient-id">
+                                {{ patient.patient_id }}
+                            </td>
+
+                            <td>
+                                {{ patient.name }}
+                            </td>
+
+                            <td>
+                                {{ patient.age }}
+                            </td>
+
+                            <td>
+                                {{ patient.gender }}
+                            </td>
+
+                            <td>
+
+                                {% if patient.room %}
+                                    {{ patient.room.room_number }}
+                                {% else %}
+                                    Not Assigned
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ patient.admission_date|date:"d M Y" }}
+                            </td>
+
+                            <td>
+
+                                {% if patient.status == "Admitted" %}
+
+                                    <span class="status admitted">
+                                        Admitted
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status discharged">
+                                        Discharged
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTION BUTTONS -->
+                            <td class="patient-actions">
+
+                                <!-- VIEW -->
+                                <a href="{% url 'patient_detail' patient.pk %}"
+                                   class="action-view"
+                                   title="View Patient">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+
+                                <!-- EDIT -->
+                                <a href="{% url 'edit_patient' patient.pk %}"
+                                   class="action-edit"
+                                   title="Edit Patient">
+
+                                    <i class="bi bi-pencil-square"></i>
+
+                                </a>
+
+
+                                <!-- DELETE -->
+                                 <form method="POST"
+      action="{% url 'delete_patient' patient.pk %}"
+      class="inline-delete-form"
+      onsubmit="return confirm('Are you sure you want to delete this patient?');">
+
+    {% csrf_token %}
+
+    <button type="submit"
+            class="action-delete"
+            title="Delete Patient">
+        <i class="bi bi-trash"></i>
+    </button>
+
+</form>
+
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="8" class="empty-patients">
+
+                                <i class="bi bi-person-x"></i>
+
+                                <p>No patients found</p>
+
+                                {% if search_query %}
+
+                                    <span>
+                                        No matching patient found.
+                                        Try another Patient ID or name.
+                                    </span>
+
+                                {% else %}
+
+                                    <span>
+                                        No patient records available.
+                                        Add a patient to see details here.
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

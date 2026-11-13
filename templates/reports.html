@@ -1,0 +1,740 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports & Analytics | VITACARE</title>
+
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reports.css' %}?v=4">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+{% include 'partials/sidebar.html' %}
+
+<main class="reports-main">
+
+    <!-- HEADER -->
+    <header class="reports-header">
+        <div class="reports-heading">
+            <span class="reports-heading-icon">
+                <i class="bi bi-bar-chart-fill"></i>
+            </span>
+
+            <div>
+                <h1>Reports & Analytics</h1>
+                <p>Hospital performance and delivery reports</p>
+            </div>
+        </div>
+
+        <div class="reports-admin">
+            <i class="bi bi-bell"></i>
+            <i class="bi bi-person-circle"></i>
+            <span>Admin</span>
+        </div>
+    </header>
+
+    <!-- DATE FILTER -->
+    <section class="report-filter-panel">
+        <form method="GET" class="report-filter-form">
+
+            <div class="filter-field">
+                <label for="startDate">From Date</label>
+                <input
+                    type="date"
+                    id="startDate"
+                    name="start_date"
+                    value="{{ start_date|date:'Y-m-d'|default:'' }}">
+            </div>
+
+            <div class="filter-field">
+                <label for="endDate">To Date</label>
+                <input
+                    type="date"
+                    id="endDate"
+                    name="end_date"
+                    value="{{ end_date|date:'Y-m-d'|default:'' }}">
+            </div>
+
+            <button type="submit" class="report-button">
+                <i class="bi bi-funnel"></i>
+                Apply Filter
+            </button>
+
+            <a href="{% url 'reports_dashboard' %}"
+               class="report-reset-button">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Reset
+            </a>
+
+            <button type="submit"
+                    name="export"
+                    value="csv"
+                    class="report-export-button">
+                <i class="bi bi-download"></i>
+                Export Report
+            </button>
+
+        </form>
+    </section>
+
+    <!-- PATIENT AND ROOM OVERVIEW -->
+    <div class="report-overview-grid">
+
+        <!-- PATIENT OVERVIEW -->
+        <section class="report-section">
+            <div class="report-section-heading">
+                <h2>
+                    <i class="bi bi-people-fill"></i>
+                    Patient Overview
+                </h2>
+            </div>
+
+            <div class="report-cards three-cards">
+
+                <a href="{% url 'reports_dashboard' %}?view=patients"
+                   class="report-card">
+                    <div class="report-card-icon blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div>
+                        <span>Total Patients</span>
+                        <h3>{{ patient_stats.total|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=admitted"
+                   class="report-card">
+                    <div class="report-card-icon green">
+                        <i class="bi bi-person-check-fill"></i>
+                    </div>
+                    <div>
+                        <span>Admitted</span>
+                        <h3>{{ patient_stats.admitted|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=discharged"
+                   class="report-card">
+                    <div class="report-card-icon purple">
+                        <i class="bi bi-person-dash-fill"></i>
+                    </div>
+                    <div>
+                        <span>Discharged</span>
+                        <h3>{{ patient_stats.discharged|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- ROOM OVERVIEW -->
+        <section class="report-section">
+            <div class="report-section-heading">
+                <h2>
+                    <i class="bi bi-hospital"></i>
+                    Room Overview
+                </h2>
+            </div>
+
+            <div class="report-cards three-cards">
+
+                <a href="{% url 'reports_dashboard' %}?view=rooms"
+                   class="report-card">
+                    <div class="report-card-icon blue">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div>
+                        <span>Total Rooms</span>
+                        <h3>{{ room_stats.total|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=available"
+                   class="report-card">
+                    <div class="report-card-icon green">
+                        <i class="bi bi-door-open-fill"></i>
+                    </div>
+                    <div>
+                        <span>Available</span>
+                        <h3>{{ room_stats.available|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=occupied"
+                   class="report-card">
+                    <div class="report-card-icon red">
+                        <i class="bi bi-door-closed-fill"></i>
+                    </div>
+                    <div>
+                        <span>Occupied</span>
+                        <h3>{{ room_stats.occupied|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- DELIVERY AND MONITORING OVERVIEW -->
+    <div class="report-overview-grid">
+
+        <!-- DELIVERY OVERVIEW -->
+        <section class="report-section">
+            <div class="report-section-heading">
+                <h2>
+                    <i class="bi bi-robot"></i>
+                    Medicine Delivery Overview
+                </h2>
+            </div>
+
+            <div class="report-cards four-cards">
+
+                <a href="{% url 'reports_dashboard' %}?view=deliveries"
+                   class="report-card">
+                    <div class="report-card-icon blue">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div>
+                        <span>Total Deliveries</span>
+                        <h3>{{ delivery_stats.total|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=completed"
+                   class="report-card">
+                    <div class="report-card-icon green">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div>
+                        <span>Completed</span>
+                        <h3>{{ delivery_stats.completed|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=in_progress"
+                   class="report-card">
+                    <div class="report-card-icon orange">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div>
+                        <span>In Progress</span>
+                        <h3>{{ delivery_stats.in_progress|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=cancelled"
+                   class="report-card">
+                    <div class="report-card-icon red">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
+                    <div>
+                        <span>Cancelled</span>
+                        <h3>{{ delivery_stats.cancelled|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- MONITORING OVERVIEW -->
+        <section class="report-section">
+            <div class="report-section-heading">
+                <h2>
+                    <i class="bi bi-activity"></i>
+                    Patient Monitoring Summary
+                </h2>
+            </div>
+
+            <div class="report-cards three-cards">
+
+                <a href="{% url 'reports_dashboard' %}?view=readings"
+                   class="report-card">
+                    <div class="report-card-icon blue">
+                        <i class="bi bi-clipboard2-pulse"></i>
+                    </div>
+                    <div>
+                        <span>Total Readings</span>
+                        <h3>{{ monitoring_stats.total_readings|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=critical"
+                   class="report-card">
+                    <div class="report-card-icon red">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <div>
+                        <span>Critical Alerts</span>
+                        <h3>{{ monitoring_stats.critical_alerts|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+                <a href="{% url 'reports_dashboard' %}?view=normal"
+                   class="report-card">
+                    <div class="report-card-icon green">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div>
+                        <span>Without Alerts</span>
+                        <h3>{{ monitoring_stats.normal_readings|default:0 }}</h3>
+                    </div>
+                    <i class="bi bi-chevron-right card-arrow"></i>
+                </a>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- DETAIL RECORDS -->
+    {% if selected_view %}
+    <section class="report-detail-panel" id="reportDetails">
+
+        <div class="report-table-heading">
+            <div>
+                <h2>{{ detail_title }}</h2>
+                <p>{{ detail_count }} records found</p>
+            </div>
+
+            <a href="{% url 'reports_dashboard' %}"
+               class="report-reset-button">
+                <i class="bi bi-x-lg"></i>
+                Close Details
+            </a>
+        </div>
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+
+                <thead>
+                    {% if detail_type == "patients" %}
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Room</th>
+                        <th>Admission Date</th>
+                        <th>Status</th>
+                    </tr>
+
+                    {% elif detail_type == "rooms" %}
+                    <tr>
+                        <th>Room Number</th>
+                        <th>Floor</th>
+                        <th>Bed Capacity</th>
+                        <th>Availability</th>
+                    </tr>
+
+                    {% elif detail_type == "deliveries" %}
+                    <tr>
+                        <th>Delivery ID</th>
+                        <th>Patient</th>
+                        <th>Room</th>
+                        <th>Medicine</th>
+                        <th>Dosage</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+
+                    {% elif detail_type == "readings" %}
+                    <tr>
+                        <th>Patient</th>
+                        <th>Heart Rate</th>
+                        <th>SpO₂</th>
+                        <th>Temperature</th>
+                        <th>Blood Pressure</th>
+                        <th>IV Level</th>
+                        <th>Recorded At</th>
+                    </tr>
+
+                    {% elif detail_type == "alerts" %}
+                    <tr>
+                        <th>Patient</th>
+                        <th>Parameter</th>
+                        <th>Message</th>
+                        <th>Severity</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                    {% endif %}
+                </thead>
+
+                <tbody>
+                    {% for record in detail_records %}
+
+                        {% if detail_type == "patients" %}
+                        <tr>
+                            <td>{{ record.patient_id }}</td>
+                            <td>{{ record.name }}</td>
+                            <td>{{ record.age }}</td>
+                            <td>{{ record.gender }}</td>
+                            <td>
+                                {% if record.room %}
+                                    {{ record.room.room_number }}
+                                {% else %}
+                                    Not assigned
+                                {% endif %}
+                            </td>
+                            <td>{{ record.admission_date|date:"d M Y" }}</td>
+                            <td>{{ record.status }}</td>
+                        </tr>
+
+                        {% elif detail_type == "rooms" %}
+                        <tr>
+                            <td>{{ record.room_number }}</td>
+                            <td>{{ record.floor }}</td>
+                            <td>{{ record.bed_capacity }}</td>
+                            <td>
+                                {% if record.is_available %}
+                                    <span class="report-status completed">Available</span>
+                                {% else %}
+                                    <span class="report-status cancelled">Occupied</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% elif detail_type == "deliveries" %}
+                        <tr>
+                            <td>#{{ record.id }}</td>
+                            <td>{{ record.patient.name }}</td>
+                            <td>{{ record.room.room_number }}</td>
+                            <td>{{ record.medicine_name }}</td>
+                            <td>{{ record.dosage }}</td>
+                            <td>{{ record.quantity }}</td>
+                            <td>
+                                <span class="report-status
+                                    {% if record.status == 'Collected' %}completed
+                                    {% elif record.status == 'Cancelled' %}cancelled
+                                    {% else %}progress{% endif %}">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                            <td>{{ record.created_at|date:"d M Y, h:i A" }}</td>
+                        </tr>
+
+                        {% elif detail_type == "readings" %}
+                        <tr>
+                            <td>{{ record.patient.name }}</td>
+                            <td>{{ record.heart_rate|default:"—" }}</td>
+                            <td>{{ record.spo2|default:"—" }}{% if record.spo2 %}%{% endif %}</td>
+                            <td>{{ record.temperature|default:"—" }}</td>
+                            <td>
+                                {% if record.systolic_bp and record.diastolic_bp %}
+                                    {{ record.systolic_bp }}/{{ record.diastolic_bp }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>{{ record.iv_level|default:"—" }}</td>
+                            <td>{{ record.recorded_at|date:"d M Y, h:i A" }}</td>
+                        </tr>
+
+                        {% elif detail_type == "alerts" %}
+                        <tr>
+                            <td>{{ record.patient.name }}</td>
+                            <td>{{ record.parameter }}</td>
+                            <td>{{ record.message }}</td>
+                            <td>{{ record.severity }}</td>
+                            <td>{{ record.status }}</td>
+                            <td>{{ record.created_at|date:"d M Y, h:i A" }}</td>
+                        </tr>
+                        {% endif %}
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="report-empty">
+                            No records available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
+    {% endif %}
+
+    <!-- CHARTS -->
+    <section class="report-charts-grid">
+
+        <div class="report-chart-panel">
+            <div class="report-chart-heading">
+                <h2>
+                    <i class="bi bi-graph-up-arrow"></i>
+                    Delivery Trend (Last 7 Days)
+                </h2>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="deliveryTrendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="report-chart-panel">
+            <div class="report-chart-heading">
+                <h2>
+                    <i class="bi bi-pie-chart-fill"></i>
+                    Delivery Status Distribution
+                </h2>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="deliveryStatusChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- RECENT DELIVERY RECORDS -->
+    <section class="report-table-panel">
+
+        <div class="report-table-heading">
+            <div>
+                <h2>
+                    <i class="bi bi-clock-history"></i>
+                    Recent Delivery Records
+                </h2>
+                <p>Latest delivery transactions</p>
+            </div>
+
+            <a href="{% url 'reports_dashboard' %}?view=deliveries"
+               class="report-view-all">
+                View All
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+
+                <thead>
+                    <tr>
+                        <th>Delivery ID</th>
+                        <th>Patient</th>
+                        <th>Room</th>
+                        <th>Medicine</th>
+                        <th>Dosage</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Date & Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for delivery in recent_deliveries %}
+                    <tr>
+                        <td>#D-{{ delivery.id }}</td>
+                        <td>{{ delivery.patient.name }}</td>
+                        <td>{{ delivery.room.room_number }}</td>
+                        <td>{{ delivery.medicine_name }}</td>
+                        <td>{{ delivery.dosage }}</td>
+                        <td>{{ delivery.quantity }}</td>
+                        <td>
+                            <span class="report-status
+                                {% if delivery.status == 'Collected' %}completed
+                                {% elif delivery.status == 'Cancelled' %}cancelled
+                                {% else %}progress{% endif %}">
+                                {{ delivery.status }}
+                            </span>
+                        </td>
+                        <td>{{ delivery.created_at|date:"d M Y, h:i A" }}</td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="report-empty">
+                            No delivery records available.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
+
+    <footer class="reports-footer">
+        VITACARE Hospital Monitoring System · Reports & Analytics
+    </footer>
+
+</main>
+
+<!-- CHART DATA -->
+{{ trend_data|json_script:"trend-data" }}
+{{ delivery_distribution|json_script:"distribution-data" }}
+
+<!-- ALL JAVASCRIPT IN ONE SCRIPT BLOCK -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* DATE VALIDATION */
+    const startDate = document.getElementById("startDate");
+    const endDate = document.getElementById("endDate");
+
+    if (startDate && endDate) {
+        startDate.addEventListener("change", function () {
+            endDate.min = this.value;
+
+            if (endDate.value && endDate.value < this.value) {
+                endDate.value = "";
+            }
+        });
+
+        endDate.addEventListener("change", function () {
+            startDate.max = this.value;
+
+            if (startDate.value && startDate.value > this.value) {
+                startDate.value = "";
+            }
+        });
+    }
+
+    /* DELIVERY TREND CHART */
+    const trendElement = document.getElementById("trend-data");
+    const trendCanvas = document.getElementById("deliveryTrendChart");
+
+    if (trendElement && trendCanvas && typeof Chart !== "undefined") {
+        const trendData = JSON.parse(trendElement.textContent || "[]");
+
+        const trendLabels = trendData.map(item => item.date);
+        const trendValues = trendData.map(item => item.count);
+
+        new Chart(trendCanvas, {
+            type: "line",
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: "Deliveries",
+                    data: trendValues,
+                    borderColor: "#2674df",
+                    backgroundColor: "rgba(38,116,223,0.12)",
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: "#2674df"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom"
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /* DELIVERY STATUS CHART */
+    const distributionElement =
+        document.getElementById("distribution-data");
+
+    const distributionCanvas =
+        document.getElementById("deliveryStatusChart");
+
+    if (
+        distributionElement &&
+        distributionCanvas &&
+        typeof Chart !== "undefined"
+    ) {
+        const distributionData =
+            JSON.parse(distributionElement.textContent || "{}");
+
+        new Chart(distributionCanvas, {
+            type: "doughnut",
+            data: {
+                labels: [
+                    "Completed",
+                    "In Progress",
+                    "Cancelled"
+                ],
+                datasets: [{
+                    data: [
+                        distributionData.completed || 0,
+                        distributionData.in_progress || 0,
+                        distributionData.cancelled || 0
+                    ],
+                    backgroundColor: [
+                        "#26ad67",
+                        "#f2a43a",
+                        "#ed5656"
+                    ],
+                    borderWidth: 2,
+                    borderColor: "#ffffff"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "65%",
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        });
+    }
+
+    /* SCROLL TO DETAIL RECORDS */
+    const detailSection = document.getElementById("reportDetails");
+
+    if (detailSection) {
+        
+    }
+
+});
+</script>
+
+</body>
+</html>
+<script>
+    // Prevent the browser from restoring an old scroll position
+    if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+    }
+
+    window.addEventListener("pageshow", function () {
+        window.scrollTo(0, 0);
+    });
+</script>
+</body>
+</html>
